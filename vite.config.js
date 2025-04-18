@@ -11,9 +11,10 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "dist", // Explicitly set output directory
+    outDir: "dist",
   },
   server: {
     port: 5173,
   },
+  base: "/", // Ensure this matches your deployment path (e.g., "/" for root, "/subpath" for subdirectories)
 });

@@ -1,0 +1,271 @@
+/* Community Page Styling */
+.community-page {
+  font-family: "Open Sans", sans-serif;
+  background-color: #f7f9fc;
+  min-height: 100vh;
+}
+
+/* Header Styling */
+.community-header {
+  text-align: center;
+  padding: 2rem 1rem;
+  border-bottom: 2px solid #e0e0e0;
+  background-color: white;
+  margin-bottom: 2rem;
+}
+
+.community-header h1 {
+  color: #2a506f;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.community-header p {
+  color: #5f7d95;
+  margin-bottom: 1.5rem;
+}
+
+.community-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.search-bar {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 250px;
+  max-width: 100%;
+}
+
+.category-select {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  min-width: 150px;
+}
+
+.button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #2a506f;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  background-color: #1c3c56;
+}
+
+.back-button {
+  padding: 8px 16px;
+  background-color: #5f7d95;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #4a697f;
+}
+
+/* New Discussion Form */
+.new-discussion-form {
+  margin: 20px auto;
+  max-width: 700px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.new-discussion-form h3 {
+  margin-bottom: 20px;
+  color: #2a506f;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.new-discussion-form input,
+.new-discussion-form textarea,
+.new-discussion-form select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.new-discussion-form input:focus,
+.new-discussion-form textarea:focus,
+.new-discussion-form select:focus {
+  border-color: #2a506f;
+  outline: none;
+}
+
+.new-discussion-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Discussion List */
+.discussion-list {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 1rem;
+}
+
+.discussion-category {
+  font-weight: bold;
+  color: #020213;
+  margin-bottom: 10px;
+}
+
+.discussion-card {
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.discussion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.discussion-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #2a506f;
+}
+
+.discussion-card p {
+  color: #5f7d95;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.discussion-info {
+  font-size: 0.9rem;
+  color: #7a7a7a;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.discussion-card button {
+  padding: 8px 16px;
+  background-color: #3b6ea5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.discussion-card button:hover {
+  background-color: #2a506f;
+}
+
+/* Comments Section */
+.comments-section {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f1f3f5;
+  border-radius: 5px;
+}
+
+.comment {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.comment:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.comment p {
+  margin-bottom: 5px;
+}
+
+.comment-author {
+  font-weight: 500;
+}
+
+.time-posted {
+  font-style: italic;
+}
+
+.comment-box {
+  margin-top: 20px;
+}
+
+.comment-box textarea {
+  width: 100%;
+  height: 80px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+
+.comment-box textarea:focus {
+  border-color: #3b6ea5;
+  outline: none;
+}
+
+.comment-box button {
+  padding: 8px 16px;
+  background-color: #3b6ea5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.comment-box button:hover {
+  background-color: #2a506f;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .community-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-bar,
+  .category-select,
+  .button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .discussion-info {
+    flex-direction: column;
+    gap: 5px;
+  }
+}

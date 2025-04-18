@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global styles */
+@layer base {
+  body,
+  html {
+    margin: 0;
+    padding: 0;
+    font-family: "Arial", sans-serif;
+  }
+}
+
+/* Custom classes for beach-related components */
+@layer components {
+  .beach-card {
+    @apply bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition duration-300;
+  }
+
+  .beach-card:hover {
+    @apply transform -translate-y-1 shadow-lg;
+  }
+
+  .beach-details__info-item {
+    @apply flex items-center gap-2 bg-primary text-white p-3 rounded-lg mb-2 font-medium transition-colors duration-200;
+  }
+
+  .beach-details__info-item:hover {
+    @apply bg-hover cursor-pointer;
+  }
+}

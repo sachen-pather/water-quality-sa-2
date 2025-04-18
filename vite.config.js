@@ -10,8 +10,10 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    outDir: "dist", // Explicitly set output directory
+  },
   server: {
-    port: 5173, // Vite's default port
-    // Removed proxy settings as we're using mock data
+    port: 5173,
   },
 });

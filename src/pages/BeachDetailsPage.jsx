@@ -1,6 +1,16 @@
+"use client";
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
-import { MapPin, Droplet, ThermometerSun, Wind } from "lucide-react";
+import {
+  MapPin,
+  Droplet,
+  ThermometerSun,
+  Wind,
+  ArrowLeft,
+  MessageSquare,
+  Calendar,
+} from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import axios from "axios";
@@ -216,159 +226,212 @@ const BeachDetailsPage = () => {
 
   return (
     <div className="beach-details">
-      <header className="beach-details__header">
-        <Link to="/" className="beach-details__back-button">
-          ← Back to Home
-        </Link>
-        <h1 className="beach-details__title">{beachData.name}</h1>
+      <header className="beach-header">
+        <div className="container">
+          <Link to="/" className="back-button">
+            <ArrowLeft size={18} color="white" />
+            <span>Back to Home</span>
+          </Link>
+          <h1 className="beach-title">{beachData.name}</h1>
+        </div>
       </header>
 
-      <main className="beach-details__content">
-        <div className="beach-details__map-container">
-          <MapContainer
-            center={coordinates}
-            zoom={13}
-            style={{ height: "100%", width: "100%" }}
-            ref={mapRef}
-            whenCreated={(map) => {
-              // Store map instance and trigger resize after creation
-              setTimeout(() => {
-                map.invalidateSize();
-              }, 400);
-            }}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <Marker position={coordinates} icon={customIcon}>
-              <Popup>
-                <strong>{beachData.name}</strong>
-                <br />
-                {weather && (
-                  <>
-                    Temperature: {Math.round(weather.main.temp)}°C
-                    <br />
-                    Wind: {Math.round(weather.wind.speed * 3.6)} km/h
-                  </>
-                )}
-              </Popup>
-            </Marker>
-            <MapUpdater center={coordinates} />
-          </MapContainer>
-        </div>
-
-        <div className="beach-details__info">
-          <div className="beach-details__info-item">
-            <MapPin className="beach-details__info-icon" />
-            <span>{beachData.location}</span>
+      <main className="beach-content">
+        <div className="container">
+          <div className="map-wrapper">
+            <MapContainer
+              center={coordinates}
+              zoom={13}
+              className="map-container"
+              ref={mapRef}
+              whenCreated={(map) => {
+                // Store map instance and trigger resize after creation
+                setTimeout(() => {
+                  map.invalidateSize();
+                }, 400);
+              }}
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              <Marker position={coordinates} icon={customIcon}>
+                <Popup>
+                  <strong>{beachData.name}</strong>
+                  <br />
+                  {weather && (
+                    <>
+                      Temperature: {Math.round(weather.main.temp)}°C
+                      <br />
+                      Wind: {Math.round(weather.wind.speed * 3.6)} km/h
+                    </>
+                  )}
+                </Popup>
+              </Marker>
+              <MapUpdater center={coordinates} />
+            </MapContainer>
           </div>
-          <div className="beach-details__info-item">
-            <Droplet className="beach-details__info-icon" />
-            <span>
-              Water Quality:{" "}
-              {beachData.waterQuality === true
-                ? "Safe"
-                : beachData.waterQuality === false
-                ? "Unsafe"
-                : beachData.waterQuality}
-            </span>
-          </div>
-          {weather && (
-            <>
-              <div className="beach-details__info-item">
-                <ThermometerSun className="beach-details__info-icon" />
-                <span>Temperature: {Math.round(weather.main.temp)}°C</span>
-              </div>
-              <div className="beach-details__info-item">
-                <Wind className="beach-details__info-icon" />
-                <span>Wind: {Math.round(weather.wind.speed * 3.6)} km/h</span>
-              </div>
-            </>
-          )}
-        </div>
 
-        <div className="beach-details__water-quality">
-          <h2 className="beach-details__section-title">
-            Water Quality Information
-          </h2>
-          <p>
-            Last sampled:{" "}
-            {beachData.date_sampled
-              ? formatDate(beachData.date_sampled)
-              : "Unknown"}
-          </p>
-          <p>
-            Status:{" "}
-            <span className={getWaterQualityColor(beachData.waterQuality)}>
-              {beachData.waterQuality === true
-                ? "Safe"
-                : beachData.waterQuality === false
-                ? "Unsafe"
-                : beachData.waterQuality || "Unknown"}
-            </span>
-          </p>
-          <p>{getWaterQualityDescription(beachData.waterQuality)}</p>
-          {beachData.values && beachData.values.length > 0 && (
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold mb-2">
-                Recent Measurements:
-              </h3>
-              <ul className="list-disc pl-5">
-                {beachData.values.map((value, index) => (
-                  <li key={index} className="mb-1">
-                    Sample {index + 1}: {value} cfu/100ml
-                  </li>
-                ))}
-              </ul>
+          <div className="info-grid">
+            <div className="info-card location">
+              <MapPin className="info-icon" />
+              <div>
+                <h3>Location</h3>
+                <p>{beachData.location}</p>
+              </div>
             </div>
-          )}
-        </div>
 
-        <div className="beach-details__description">
-          <h2 className="beach-details__description-title">Description</h2>
-          <p>{beachData.description}</p>
-        </div>
+            <div
+              className={`info-card water-quality ${
+                beachData.waterQuality === true
+                  ? "safe"
+                  : beachData.waterQuality === false
+                  ? "unsafe"
+                  : ""
+              }`}
+            >
+              <Droplet className="info-icon" />
+              <div>
+                <h3>Water Quality</h3>
+                <p>
+                  {beachData.waterQuality === true
+                    ? "Safe"
+                    : beachData.waterQuality === false
+                    ? "Unsafe"
+                    : beachData.waterQuality}
+                </p>
+              </div>
+            </div>
 
-        <div className="beach-details__community">
-          <h2 className="beach-details__community-title">Community Posts</h2>
-          <form
-            onSubmit={handleCommentSubmit}
-            className="beach-details__comment-form"
-          >
-            <textarea
-              className="beach-details__comment-input"
-              rows="3"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Share your experience at this beach..."
-              required
-            ></textarea>
-            <button type="submit" className="beach-details__submit-button">
-              Submit Post
-            </button>
-          </form>
-
-          <div className="beach-details__posts">
-            {communityPosts.length === 0 ? (
-              <p>
-                No approved posts yet. Be the first to share your experience!
-              </p>
-            ) : (
-              communityPosts.map((post) => (
-                <div key={post.post_id} className="beach-details__post">
-                  <div className="post-header">
-                    <span className="post-author">
-                      {post.author || "Anonymous"}
-                    </span>
-                    <span className="post-date">
-                      {formatDate(post.created_at)}
-                    </span>
+            {weather && (
+              <>
+                <div className="info-card temperature">
+                  <ThermometerSun className="info-icon" />
+                  <div>
+                    <h3>Temperature</h3>
+                    <p>{Math.round(weather.main.temp)}°C</p>
                   </div>
-                  <p className="post-content">{post.content}</p>
                 </div>
-              ))
+
+                <div className="info-card wind">
+                  <Wind className="info-icon" />
+                  <div>
+                    <h3>Wind</h3>
+                    <p>{Math.round(weather.wind.speed * 3.6)} km/h</p>
+                  </div>
+                </div>
+              </>
             )}
+          </div>
+
+          <div className="content-grid">
+            <section className="content-card water-quality-details">
+              <h2 className="section-title">
+                <Droplet className="section-icon" />
+                Water Quality Information
+              </h2>
+              <div className="quality-content">
+                <div className="quality-meta">
+                  <div className="quality-item">
+                    <h4>Last sampled</h4>
+                    <p>
+                      {beachData.date_sampled
+                        ? formatDate(beachData.date_sampled)
+                        : "Unknown"}
+                    </p>
+                  </div>
+                  <div className="quality-item">
+                    <h4>Status</h4>
+                    <p
+                      className={`quality-status ${getWaterQualityColor(
+                        beachData.waterQuality
+                      )}`}
+                    >
+                      {beachData.waterQuality === true
+                        ? "Safe"
+                        : beachData.waterQuality === false
+                        ? "Unsafe"
+                        : beachData.waterQuality || "Unknown"}
+                    </p>
+                  </div>
+                </div>
+
+                <p className="quality-description">
+                  {getWaterQualityDescription(beachData.waterQuality)}
+                </p>
+
+                {beachData.values && beachData.values.length > 0 && (
+                  <div className="measurements">
+                    <h3>Recent Measurements</h3>
+                    <ul className="measurements-list">
+                      {beachData.values.map((value, index) => (
+                        <li key={index} className="measurement-item">
+                          <span className="measurement-label">
+                            Sample {index + 1}
+                          </span>
+                          <span className="measurement-value">
+                            {value} cfu/100ml
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </section>
+
+            <section className="content-card description">
+              <h2 className="section-title">
+                <MapPin className="section-icon" />
+                About This Beach
+              </h2>
+              <p className="description-text">{beachData.description}</p>
+            </section>
+
+            <section className="content-card community">
+              <h2 className="section-title">
+                <MessageSquare className="section-icon" />
+                Community Posts
+              </h2>
+
+              <form onSubmit={handleCommentSubmit} className="comment-form">
+                <textarea
+                  className="comment-input"
+                  rows="3"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Share your experience at this beach..."
+                  required
+                ></textarea>
+                <button type="submit" className="submit-button">
+                  Submit Post
+                </button>
+              </form>
+
+              <div className="posts-container">
+                {communityPosts.length === 0 ? (
+                  <p className="no-posts">
+                    No approved posts yet. Be the first to share your
+                    experience!
+                  </p>
+                ) : (
+                  communityPosts.map((post) => (
+                    <div key={post.post_id} className="post">
+                      <div className="post-header">
+                        <span className="post-author">
+                          {post.author || "Anonymous"}
+                        </span>
+                        <span className="post-date">
+                          <Calendar size={14} />
+                          {formatDate(post.created_at)}
+                        </span>
+                      </div>
+                      <p className="post-content">{post.content}</p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </section>
           </div>
         </div>
       </main>

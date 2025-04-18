@@ -1,4 +1,5 @@
 name: Azure Static Web Apps CI/CD
+
 on:
   push:
     branches:
@@ -7,6 +8,7 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
+
 jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
@@ -14,31 +16,9 @@ jobs:
     name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
-          lfs: false
       
-      # Add Node.js setup
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      
-      # Fix Git config issues
-      - name: Clean Git Config
-        run: |
-          git config --local --unset http.https://github.com/.extraheader || true
-          git config --global --unset http.https://github.com/.extraheader || true
-      
-      # Add step to install dependencies
-      - name: Install dependencies
-        run: npm ci
-      
-      # Build step
-      - name: Build
-        run: npm run build
-      
-      - name: Deploy
+      # Use the Azure Static Web Apps deploy action with no custom build
+      - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -48,7 +28,6 @@ jobs:
           app_location: "/"
           api_location: ""
           output_location: "dist"
-          skip_app_build: true # We're building the app separately
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

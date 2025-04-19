@@ -135,6 +135,12 @@ const HomePage = () => {
                     position={[beach.lat, beach.lng]}
                     icon={beachIcon}
                     eventHandlers={{
+                      mouseover: (e) => {
+                        e.target.openPopup();
+                      },
+                      mouseout: (e) => {
+                        e.target.closePopup();
+                      },
                       click: () => {
                         handleBeachSelection(beach);
                       },

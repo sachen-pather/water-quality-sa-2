@@ -56,11 +56,12 @@ body {
   position: relative;
 }
 
+/* Remove the back-button styles from CSS since we're using inline styles */
 .back-button {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: white;
+  color: white !important;
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
@@ -79,6 +80,21 @@ body {
 .back-button span {
   color: white;
   font-weight: 600;
+}
+
+/* Add these new styles with !important to override any potential conflicts */
+.beach-header a {
+  color: white !important;
+}
+
+.beach-header a svg {
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+}
+
+.beach-header a span {
+  color: white !important;
 }
 
 .beach-title {

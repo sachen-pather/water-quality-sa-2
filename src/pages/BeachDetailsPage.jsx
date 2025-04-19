@@ -228,9 +228,25 @@ const BeachDetailsPage = () => {
     <div className="beach-details">
       <header className="beach-header">
         <div className="container">
-          <Link to="/" className="back-button">
-            <ArrowLeft size={18} color="white" />
-            <span>Back to Home</span>
+          <Link
+            to="/"
+            className="back-button"
+            style={{
+              color: "white",
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "8px 16px",
+              borderRadius: "8px",
+              textDecoration: "none",
+              marginBottom: "12px",
+            }}
+          >
+            <ArrowLeft size={18} style={{ color: "white" }} />
+            <span style={{ color: "white", fontWeight: "600" }}>
+              Back to Home
+            </span>
           </Link>
           <h1 className="beach-title">{beachData.name}</h1>
         </div>

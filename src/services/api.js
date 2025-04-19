@@ -4,7 +4,7 @@ import {
   pendingPostsData,
   discussionsData,
   commentsData,
-} from "./mockdata";
+} from "./mockData";
 
 // Simulated delay to mimic network requests
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

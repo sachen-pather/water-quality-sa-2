@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { X, Mail, Lock } from "lucide-react";
-import { authApi } from "@/services/api";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("admin@example.com"); // Pre-filled for demo
-  const [password, setPassword] = useState("password"); // Pre-filled for demo
+  const [email, setEmail] = useState("admin@example.com");
+  const [password, setPassword] = useState("password");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -15,22 +14,14 @@ const LoginPage = () => {
     setError("");
     setIsLoading(true);
 
-    try {
-      const response = await authApi.login({ email, password });
-
-      if (response.data.status === "success") {
-        // Set a flag in localStorage to indicate the user is logged in
-        localStorage.setItem("isLoggedIn", "true");
-        // Navigate to the admin dashboard
-        navigate("/admin");
-      } else {
-        setError("Invalid login credentials");
-      }
-    } catch (error) {
-      setError(
-        error.response?.data?.message || "An error occurred during login"
-      );
-    } finally {
+    // For demo purposes, directly check credentials
+    if (email === "admin@example.com" && password === "password") {
+      localStorage.setItem("isAdmin", "true");
+      localStorage.setItem("isLoggedIn", "true");
+      setIsLoading(false);
+      navigate("/admin");
+    } else {
+      setError("Invalid login credentials");
       setIsLoading(false);
     }
   };

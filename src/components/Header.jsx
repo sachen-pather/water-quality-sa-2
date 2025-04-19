@@ -1,16 +1,30 @@
 "use client";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { ChevronLeft, Waves } from "lucide-react";
+import { ChevronLeft, Waves, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const Header = ({
-  user,
-  onLogout,
   title = "SeaClear",
   showBackButton = false,
   backLink = "/",
 }) => {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check admin status when component mounts
+    const adminStatus = localStorage.getItem("isAdmin") === "true";
+    setIsAdmin(adminStatus);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("isAdmin");
+    setIsAdmin(false);
+    navigate("/");
+  };
+
   return (
     <header className="bg-gradient-to-r from-cyan-600 to-blue-700 shadow-md">
       <div className="container mx-auto px-6">
@@ -59,25 +73,44 @@ const Header = ({
                 Community
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-200 transition-all duration-300 group-hover:w-full"></span>
               </Link>
-              <Link
-                to="/login"
-                className="bg-white text-blue-700 px-5 py-2 rounded-full hover:bg-cyan-50 transition-colors font-medium shadow-sm hover:shadow-md"
-              >
-                Admin Login
-              </Link>
+              {isAdmin ? (
+                <button
+                  onClick={handleLogout}
+                  className="bg-white text-blue-700 px-5 py-2 rounded-full hover:bg-cyan-50 transition-colors font-medium shadow-sm hover:shadow-md flex items-center gap-2"
+                >
+                  <LogOut size={16} />
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  className="bg-white text-blue-700 px-5 py-2 rounded-full hover:bg-cyan-50 transition-colors font-medium shadow-sm hover:shadow-md"
+                >
+                  Admin Login
+                </Link>
+              )}
             </nav>
           )}
 
           {/* Mobile menu button - only shown on smaller screens */}
           <div className="md:hidden flex items-center">
-            {!showBackButton && (
-              <Link
-                to="/login"
-                className="bg-white text-blue-700 px-4 py-1.5 rounded-full hover:bg-cyan-50 transition-colors font-medium shadow-sm text-sm"
-              >
-                Admin
-              </Link>
-            )}
+            {!showBackButton &&
+              (isAdmin ? (
+                <button
+                  onClick={handleLogout}
+                  className="bg-white text-blue-700 px-4 py-1.5 rounded-full hover:bg-cyan-50 transition-colors font-medium shadow-sm text-sm flex items-center gap-1"
+                >
+                  <LogOut size={14} />
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  className="bg-white text-blue-700 px-4 py-1.5 rounded-full hover:bg-cyan-50 transition-colors font-medium shadow-sm text-sm"
+                >
+                  Admin
+                </Link>
+              ))}
           </div>
         </div>
 
@@ -104,8 +137,6 @@ const Header = ({
 };
 
 Header.propTypes = {
-  user: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  onLogout: PropTypes.func,
   title: PropTypes.string,
   showBackButton: PropTypes.bool,
   backLink: PropTypes.string,

@@ -1,11 +1,9 @@
-"use client";
-
-import { Link } from "react-router-dom";
+import React from "react";
+import Header from "../components/Header";
 import {
   Droplet,
   Shield,
   Leaf,
-  ArrowLeft,
   Info,
   AlertTriangle,
   Heart,
@@ -13,12 +11,12 @@ import {
 
 // Educational card component with improved styling
 const EducationCard = ({ icon, title, content }) => (
-  <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
-    <div className="flex justify-center mb-4 text-blue-500">{icon}</div>
-    <h2 className="text-xl font-semibold mb-3 text-center text-blue-800">
+  <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow duration-300 h-full flex flex-col">
+    <div className="flex justify-center mb-4 text-cyan-600">{icon}</div>
+    <h2 className="text-xl font-semibold mb-3 text-center text-blue-700">
       {title}
     </h2>
-    <p className="text-gray-600 flex-grow">{content}</p>
+    <p className="text-gray-700 flex-grow">{content}</p>
   </div>
 );
 
@@ -26,30 +24,17 @@ const EducationCard = ({ icon, title, content }) => (
 const SectionHeader = ({ icon, title }) => (
   <div className="flex items-center mb-4 gap-2">
     {icon}
-    <h2 className="text-2xl font-bold text-blue-800">{title}</h2>
+    <h2 className="text-2xl font-bold text-blue-700">{title}</h2>
   </div>
 );
 
 const EducationalContentPage = () => {
   return (
-    <div className="min-h-screen bg-blue-50">
-      <header className="beach-header">
-        <div className="container mx-auto px-6">
-          <Link
-            to="/"
-            className="back-button"
-            style={{ backgroundColor: "rgba(255, 255, 255, 0.15)" }}
-          >
-            <ArrowLeft size={18} />
-            <span>Back to Home</span>
-          </Link>
-          <h1 className="text-3xl md:text-4xl font-bold mt-2">
-            Learn About Beach Safety and Conservation
-          </h1>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gray-50">
+      <Header showBackButton title="Learn More" backLink="/" />
 
       <main className="container mx-auto px-6 py-8">
+        {/* Top Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <EducationCard
             icon={<Droplet className="w-12 h-12" />}
@@ -68,10 +53,11 @@ const EducationalContentPage = () => {
           />
         </div>
 
-        <div className="content-grid grid md:grid-cols-2 gap-6 mb-12">
-          <section className="content-card bg-white rounded-lg shadow-md p-6 md:col-span-2">
+        {/* Main Content Sections */}
+        <div className="space-y-6">
+          <section className="bg-white rounded-xl shadow-sm p-6">
             <SectionHeader
-              icon={<Info className="text-blue-500 w-6 h-6" />}
+              icon={<Info className="text-cyan-600 w-6 h-6" />}
               title="Water Quality Explained"
             />
 
@@ -111,7 +97,7 @@ const EducationalContentPage = () => {
             </div>
           </section>
 
-          <section className="content-card bg-white rounded-lg shadow-md p-6">
+          <section className="bg-white rounded-xl shadow-sm p-6">
             <SectionHeader
               icon={<AlertTriangle className="text-yellow-500 w-6 h-6" />}
               title="Understanding E. coli in Beach Water"
@@ -182,9 +168,9 @@ const EducationalContentPage = () => {
             </div>
           </section>
 
-          <section className="content-card bg-white rounded-lg shadow-md p-6">
+          <section className="bg-white rounded-xl shadow-sm p-6">
             <SectionHeader
-              icon={<Heart className="text-red-500 w-6 h-6" />}
+              icon={<Heart className="text-cyan-600 w-6 h-6" />}
               title="How You Can Help"
             />
 
@@ -196,8 +182,8 @@ const EducationalContentPage = () => {
               </p>
 
               <div className="grid gap-3">
-                <div className="p-3 border-l-4 border-blue-500 bg-blue-50 rounded-r-md">
-                  <h4 className="font-semibold text-blue-800">
+                <div className="p-3 border-l-4 border-cyan-500 bg-blue-50 rounded-r-md">
+                  <h4 className="font-semibold text-blue-700">
                     Participate in beach clean-up events
                   </h4>
                   <p className="text-gray-700 text-sm">
@@ -206,8 +192,8 @@ const EducationalContentPage = () => {
                   </p>
                 </div>
 
-                <div className="p-3 border-l-4 border-blue-500 bg-blue-50 rounded-r-md">
-                  <h4 className="font-semibold text-blue-800">
+                <div className="p-3 border-l-4 border-cyan-500 bg-blue-50 rounded-r-md">
+                  <h4 className="font-semibold text-blue-700">
                     Properly dispose of trash
                   </h4>
                   <p className="text-gray-700 text-sm">
@@ -215,8 +201,8 @@ const EducationalContentPage = () => {
                   </p>
                 </div>
 
-                <div className="p-3 border-l-4 border-blue-500 bg-blue-50 rounded-r-md">
-                  <h4 className="font-semibold text-blue-800">
+                <div className="p-3 border-l-4 border-cyan-500 bg-blue-50 rounded-r-md">
+                  <h4 className="font-semibold text-blue-700">
                     Use reef-safe sunscreen
                   </h4>
                   <p className="text-gray-700 text-sm">
@@ -225,8 +211,8 @@ const EducationalContentPage = () => {
                   </p>
                 </div>
 
-                <div className="p-3 border-l-4 border-blue-500 bg-blue-50 rounded-r-md">
-                  <h4 className="font-semibold text-blue-800">Report issues</h4>
+                <div className="p-3 border-l-4 border-cyan-500 bg-blue-50 rounded-r-md">
+                  <h4 className="font-semibold text-blue-700">Report issues</h4>
                   <p className="text-gray-700 text-sm">
                     Use our platform to report water quality concerns or beach
                     pollution
@@ -237,58 +223,6 @@ const EducationalContentPage = () => {
           </section>
         </div>
       </main>
-
-      <footer className="bg-gradient-to-r from-blue-700 to-blue-900 text-white py-8 mt-12">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-6 md:mb-0">
-              <h3 className="text-2xl font-bold">SeaClear</h3>
-              <p className="text-blue-200">Keeping beaches safe and clean</p>
-            </div>
-            <div className="grid grid-cols-3 gap-x-8 gap-y-2">
-              <Link
-                to="/"
-                className="text-blue-200 hover:text-white transition-colors"
-              >
-                Home
-              </Link>
-              <Link
-                to="/community"
-                className="text-blue-200 hover:text-white transition-colors"
-              >
-                Community
-              </Link>
-              <Link
-                to="/login"
-                className="text-blue-200 hover:text-white transition-colors"
-              >
-                Admin
-              </Link>
-              <Link
-                to="/beaches"
-                className="text-blue-200 hover:text-white transition-colors"
-              >
-                Beaches
-              </Link>
-              <Link
-                to="/about"
-                className="text-blue-200 hover:text-white transition-colors"
-              >
-                About Us
-              </Link>
-              <Link
-                to="/contact"
-                className="text-blue-200 hover:text-white transition-colors"
-              >
-                Contact
-              </Link>
-            </div>
-          </div>
-          <div className="mt-8 pt-6 border-t border-blue-600 text-center text-blue-200 text-sm">
-            &copy; {new Date().getFullYear()} SeaClear. All rights reserved.
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

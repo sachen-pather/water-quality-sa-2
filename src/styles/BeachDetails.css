@@ -198,18 +198,20 @@ body {
 /* Content Grid */
 .content-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
+  grid-template-columns: 1fr; /* Single column that takes full width */
+  gap: 1.5rem; /* Adjust gap between sections as needed */
 }
 
 .content-card {
-  background-color: white;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  transition: box-shadow var(--transition-fast);
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
 }
-
+.content-card.description {
+  grid-column: 1 / -1; /* Ensure it spans the full width of the grid */
+}
 .content-card:hover {
   box-shadow: var(--shadow-md);
 }

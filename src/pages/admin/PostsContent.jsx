@@ -3,6 +3,89 @@ import { CheckSquare, XSquare } from "lucide-react";
 import { communityApi } from "@/services/api";
 import { formatDate } from "@/utils/formatters";
 
+// Helper function to get beach name from code
+const getBeachNameFromCode = (beachCode) => {
+  const beachMap = {
+    // Add a mapping of beach codes to names
+    XCN08: "Silverstroomstrand Tidal Pool",
+    XCN14: "Silverstroomstrand Lifeguard Building",
+    XCN07: "Melkbosstrand",
+    XCN12: "Blouberg Big Bay Lifeguard Building",
+    CN37: "Small Bay",
+    XCN06: "Tableview",
+    XCN04: "Milnerton Lighthouse",
+    CN22: "Lagoon Beach",
+    CN04: "Mouille Point Beach (Thermopoli)",
+    CN36: "Three Anchor Bay Beach",
+    CN06C: "Rocklands Beach",
+    CN18I: "Milton Beach Tidal Pool Inside",
+    CN34: "Queen's Beach Tidal Pool",
+    CN35: "Queen's Beach Gully",
+    CN16O: "Saunders Rocks Tidal Pool Outside",
+    CN16I: "Saunders Rocks Tidal Pool Inside",
+    CN42: "Clifton Second Beach",
+    CN09: "Clifton Fourth Beach",
+    CN10: "Maidens Cove North Sandy Cove",
+    CN19I: "Maidens Cove Tidal Pool West Inside",
+    CN20I: "Maidens Cove Tidal Pool East Inside",
+    CN31: "Glen Beach",
+    CN30: "Camps Bay North",
+    CN41: "Camps Bay Central",
+    CN11: "Camps Bay South",
+    CN12A: "Camps Bay Tidal Pool Inside",
+    CN14: "Barley Bay",
+    CN40: "Beta Beach",
+    CN21: "Bakoven Beach",
+    CN39: "Cosy Bay",
+    XCN09: "Oudekraal",
+    XCN03: "Llandudno",
+    HB13: "Hout Bay Mariners Wharf",
+    XCN10: "Hout Bay Chapmans Peak",
+    CS40: "Hoek, Noordhoek Beach",
+    XCN02: "Long Beach Kommetjie",
+    CS39: "Inner Kom",
+    XCN11: "Scarborough Beach",
+    CS37: "Miller's Point Tidal Pool",
+    XCS12: "Fishermans Beach",
+    CS36: "Windmill Beach",
+    XCS32: "Boulders Beach",
+    XCS13: "Seaforth Beach",
+    XCS14: "Simons Town Long Beach",
+    CS38: "Glencairn Tidal Pool",
+    XCS15: "Glencairn Beach",
+    CS35: "Fish Hoek Corner Of The Beach",
+    CS41: "Fish Hoek Beach Lifesaving Club",
+    XCS17: "Clovelly Beach Silvermine Mouth",
+    CS42: "Woolley's Tidal Pool",
+    CS01A: "Kalk Bay Harbour Beach",
+    CS02: "Kalk Bay Tidal Pool Inside",
+    CS03: "Dalebrook Tidal Pool",
+    CS44: "Dangers Beach",
+    CS04: "St James Tidal Pool",
+    CS34: "Muizenberg Surfers Corner",
+    CS16: "Muizenberg Pavilion",
+    CS07: "Sunrise Beach Parking Area",
+    CS11: "Ribbon Road Parking Area",
+    CS17: "Strandfontein Tidal Pool",
+    CS45: "Strandfontein Beach",
+    CS46: "Blue Waters Resort",
+    CS19: "Mnandi Beach",
+    XCS18: "Monwabisi Tidal Pool",
+    XCS30: "Monwabisi Beach",
+    XCS19: "Macassar Beach",
+    XCS34: "Strand Pipe Surfing",
+    XCS26: "Strand Lifesaving Club",
+    XCS29: "Strand Harmonie Park Jetty",
+    XCS05: "Gordons Bay East Beach",
+    CS29: "Gordons Bay Milkwoods",
+    XCS08: "Gordons Bay Bikini Beach",
+    XCS09: "Kogel Bay Beach",
+    // Add more mappings as needed
+  };
+
+  return beachMap[beachCode] || beachCode;
+};
+
 const PostsContent = () => {
   const [pendingPosts, setPendingPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -16,7 +99,18 @@ const PostsContent = () => {
     try {
       setIsLoading(true);
       const response = await communityApi.getPendingPosts();
-      setPendingPosts(response.data);
+
+      // Transform the backend data structure to match the expected frontend format
+      const transformedPosts = response.data.map((post) => ({
+        post_id: post.id,
+        beach_name: getBeachNameFromCode(post.beachCode),
+        beach_code: post.beachCode,
+        author: "Anonymous", // Your backend currently doesn't have author/nickname
+        content: post.content,
+        created_at: post.createdAt,
+      }));
+
+      setPendingPosts(transformedPosts);
       setError(null);
     } catch (error) {
       console.error("Error fetching pending posts:", error);

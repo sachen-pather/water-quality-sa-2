@@ -31,7 +31,7 @@ const UploadContent = () => {
     try {
       // Use the environment variable for API URL
       const uploadUrl =
-        import.meta.env.VITE_UPLOAD_API_URL || "http://localhost:5001/upload";
+        import.meta.env.VITE_UPLOAD_API_URL || "https://localhost:7111/upload";
       const response = await axios.post(uploadUrl, formData, {
         headers: {
           "Content-Type": "multipart/form-data",

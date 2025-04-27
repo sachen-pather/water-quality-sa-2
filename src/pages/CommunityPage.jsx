@@ -1,37 +1,42 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import Header from "../components/Header";
 import { discussionsApi } from "@/services/api";
 import { formatDate } from "@/utils/formatters";
-import "@/styles/CommunityPage.css";
+import { MessageSquare, Search, Filter, PlusCircle } from "lucide-react";
+
+const DISCUSSION_CATEGORIES = {
+  GENERAL: "General",
+  WATER_QUALITY: "Water Quality",
+  CRIME: "Crime & Safety",
+  SEA_CREATURES: "Sea Creature Sightings",
+  BEACH_EXPERIENCES: "Beach Experiences",
+  EVENTS: "Beach Events & Cleanups",
+  WEATHER: "Weather & Conditions",
+  FACILITIES: "Beach Facilities",
+  CONSERVATION: "Conservation",
+  ACTIVITIES: "Beach Activities",
+};
 
 const CommunityPage = () => {
   const [discussions, setDiscussions] = useState([]);
-  const [filteredDiscussions, setFilteredDiscussions] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [newDiscussion, setNewDiscussion] = useState({
-    title: "",
-    description: "",
-    category: "Beach Experiences",
-  });
-  const [comments, setComments] = useState({});
-  const [newComment, setNewComment] = useState("");
-  const [activeDiscussion, setActiveDiscussion] = useState(null);
-  const [showDiscussionForm, setShowDiscussionForm] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [showDiscussionForm, setShowDiscussionForm] = useState(false);
+  const [newDiscussion, setNewDiscussion] = useState({
+    title: "",
+    content: "",
+    category: DISCUSSION_CATEGORIES.GENERAL,
+  });
+  const [activeDiscussion, setActiveDiscussion] = useState(null);
+  const [comments, setComments] = useState({});
+  const [isLoadingComments, setIsLoadingComments] = useState({});
 
-  // Fetch all discussions on component mount
   useEffect(() => {
     fetchDiscussions();
   }, []);
 
-  // Filter discussions when dependencies change
-  useEffect(() => {
-    filterDiscussions();
-  }, [discussions, searchQuery, selectedCategory]);
-
-  // Fetch discussions from the API
   const fetchDiscussions = async () => {
     try {
       setIsLoading(true);
@@ -46,139 +51,149 @@ const CommunityPage = () => {
     }
   };
 
-  // Filter discussions based on search query and category
-  const filterDiscussions = () => {
-    if (!discussions.length) {
-      setFilteredDiscussions([]);
-      return;
-    }
-
-    let updatedDiscussions = [...discussions];
-
-    // Filter by search query
-    if (searchQuery) {
-      updatedDiscussions = updatedDiscussions.filter(
-        (discussion) =>
-          discussion.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          discussion.content?.toLowerCase().includes(searchQuery.toLowerCase())
+  const fetchComments = async (discussionId) => {
+    try {
+      setIsLoadingComments((prev) => ({ ...prev, [discussionId]: true }));
+      const response = await discussionsApi.getCommentsByDiscussion(
+        discussionId
       );
+      setComments((prev) => ({ ...prev, [discussionId]: response.data }));
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    } finally {
+      setIsLoadingComments((prev) => ({ ...prev, [discussionId]: false }));
     }
-
-    // Filter by selected category
-    if (selectedCategory !== "All") {
-      updatedDiscussions = updatedDiscussions.filter(
-        (discussion) => discussion.category === selectedCategory
-      );
-    }
-
-    setFilteredDiscussions(updatedDiscussions);
   };
 
-  // Handle input changes in the new discussion form
   const handleNewDiscussionChange = (e) => {
     const { name, value } = e.target;
-    setNewDiscussion({ ...newDiscussion, [name]: value });
+    setNewDiscussion((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  // Add a new discussion
   const handleAddDiscussion = async () => {
     if (
       newDiscussion.title.trim() === "" ||
-      newDiscussion.description.trim() === ""
+      newDiscussion.content.trim() === ""
     ) {
       alert("Please fill in all fields");
       return;
     }
 
     try {
-      const payload = {
-        title: newDiscussion.title,
-        content: newDiscussion.description,
-        category: newDiscussion.category,
-        author: "Anonymous",
-      };
-
-      await discussionsApi.createDiscussion(payload);
-
-      // Reset form and refresh discussions
+      await discussionsApi.createDiscussion(newDiscussion);
       setNewDiscussion({
         title: "",
-        description: "",
-        category: "Beach Experiences",
+        content: "",
+        category: DISCUSSION_CATEGORIES.GENERAL,
       });
       setShowDiscussionForm(false);
       fetchDiscussions();
     } catch (error) {
-      console.error("Error adding discussion:", error);
-      alert("Failed to add discussion. Please try again.");
+      console.error("Error creating discussion:", error);
+      alert("Failed to create discussion. Please try again.");
     }
   };
 
-  // Fetch comments for a discussion
-  const fetchComments = async (discussionId) => {
-    try {
-      const response = await discussionsApi.getCommentsByDiscussion(
-        discussionId
-      );
-      // Sort comments by date (oldest first)
-      const sortedComments = response.data.sort(
-        (a, b) => new Date(a.created_at) - new Date(b.created_at)
-      );
-      setComments({ ...comments, [discussionId]: sortedComments });
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-      // Set empty array if error to prevent repeated failed requests
-      setComments({ ...comments, [discussionId]: [] });
-    }
-  };
+  const filteredDiscussions = discussions.filter((discussion) => {
+    const matchesSearch =
+      discussion.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      discussion.content.toLowerCase().includes(searchQuery.toLowerCase());
 
-  // Add a new comment to a discussion
-  const handleAddComment = async (discussionId) => {
-    if (newComment.trim() === "") {
-      alert("Comment cannot be empty");
-      return;
-    }
+    const matchesCategory =
+      selectedCategory === "All" || discussion.category === selectedCategory;
 
-    try {
-      const payload = {
-        content: newComment,
-        author: "Anonymous",
-      };
+    return matchesSearch && matchesCategory;
+  });
 
-      const response = await discussionsApi.createComment(
-        discussionId,
-        payload
-      );
+  const CommentsSection = ({ discussionId }) => {
+    const [commentText, setCommentText] = useState("");
+    const discussionComments = comments[discussionId] || [];
+    const isLoading = isLoadingComments[discussionId];
 
-      // Update comments state with the new comment
-      setComments((prevComments) => {
-        const updatedComments = prevComments[discussionId]
-          ? [...prevComments[discussionId]]
-          : [];
-        updatedComments.push(response.data);
-        return { ...prevComments, [discussionId]: updatedComments };
-      });
+    const handleLocalComment = async () => {
+      if (!commentText.trim()) {
+        alert("Please enter a comment");
+        return;
+      }
 
-      setNewComment(""); // Reset comment input
-    } catch (error) {
-      console.error("Error adding comment:", error);
-      alert("Failed to add comment. Please try again.");
-    }
-  };
+      try {
+        const response = await discussionsApi.createComment(
+          discussionId,
+          commentText
+        );
+        setComments((prev) => ({
+          ...prev,
+          [discussionId]: [...(prev[discussionId] || []), response.data],
+        }));
+        setCommentText("");
+      } catch (error) {
+        console.error("Error adding comment:", error);
+        alert("Failed to add comment. Please try again.");
+      }
+    };
 
-  // Reset view to discussion list
-  const handleBackToDiscussions = () => {
-    setActiveDiscussion(null);
-    setNewComment("");
-  };
-
-  // Loading state
-  if (isLoading && !discussions.length) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="mt-4 border-t pt-4">
+        <h4 className="font-semibold text-gray-800 mb-4">Comments</h4>
+
+        {isLoading ? (
+          <div className="text-center py-4">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-600 mx-auto"></div>
+          </div>
+        ) : (
+          <>
+            {discussionComments.length > 0 ? (
+              <div className="space-y-4">
+                {discussionComments.map((comment) => (
+                  <div key={comment.id} className="bg-gray-50 rounded-xl p-4">
+                    <p className="text-gray-700">{comment.content}</p>
+                    <div className="text-sm text-gray-500 mt-2">
+                      {formatDate(comment.createdAt)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-center">
+                No comments yet. Be the first to comment!
+              </p>
+            )}
+
+            <div className="mt-4 flex gap-2">
+              <input
+                type="text"
+                className="flex-1 p-2 border rounded-xl"
+                placeholder="Add a comment..."
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleLocalComment();
+                  }
+                }}
+              />
+              <button
+                className="bg-gradient-to-r from-cyan-600 to-blue-700 text-white px-4 py-2 rounded-xl hover:opacity-90 transition-opacity"
+                onClick={handleLocalComment}
+              >
+                Post
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-blue-800">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-blue-700">
             Loading discussions...
           </h2>
         </div>
@@ -187,221 +202,163 @@ const CommunityPage = () => {
   }
 
   return (
-    <div className="community-page">
-      {/* Navbar */}
-      <nav className="bg-blue-600 text-white py-4 px-6">
-        <div className="container mx-auto flex justify-between items-center">
-          <Link to="/" className="text-white text-2xl font-bold">
-            SeaClear
-          </Link>
-          <div className="flex space-x-4">
-            <Link to="/" className="text-white hover:text-blue-200">
-              Home
-            </Link>
-            <Link
-              to="/community"
-              className="text-white hover:text-blue-200 font-bold"
-            >
-              Community
-            </Link>
-            <Link to="/education" className="text-white hover:text-blue-200">
-              Learn
-            </Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-gray-50">
+      <Header showBackButton title="Community" backLink="/" />
 
-      <div className="community-header">
-        <h1>Community Discussions</h1>
-        <p>
-          Share your beach experiences and join the conversation about water
-          quality.
-        </p>
-        <div className="community-controls">
-          <input
-            type="text"
-            className="search-bar"
-            placeholder="Search discussions..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <select
-            className="category-select"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            <option value="All">All Categories</option>
-            <option value="Beach Experiences">Beach Experiences</option>
-            <option value="Water Quality Awareness">
-              Water Quality Awareness
-            </option>
-            <option value="Beach Events and Cleanups">
-              Beach Events and Cleanups
-            </option>
-          </select>
+      <main className="container mx-auto px-6 py-8">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-blue-700 mb-2">
+            Community Discussions
+          </h1>
+          <p className="text-gray-600">
+            Share your beach experiences and join the conversation about water
+            quality.
+          </p>
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="relative flex-1">
+            <Search
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              size={20}
+            />
+            <input
+              type="text"
+              className="w-full pl-10 p-2 border rounded-xl"
+              placeholder="Search discussions..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          <div className="relative min-w-[200px]">
+            <Filter
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              size={20}
+            />
+            <select
+              className="w-full pl-10 p-2 border rounded-xl appearance-none"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              <option value="All">All Categories</option>
+              {Object.values(DISCUSSION_CATEGORIES).map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <button
-            className="button"
+            className="bg-gradient-to-r from-cyan-600 to-blue-700 text-white px-6 py-2 rounded-xl hover:opacity-90 transition-opacity flex items-center gap-2"
             onClick={() => setShowDiscussionForm(!showDiscussionForm)}
           >
-            {showDiscussionForm ? "Cancel" : "Start a New Discussion"}
+            <PlusCircle size={20} />
+            {showDiscussionForm ? "Cancel" : "New Discussion"}
           </button>
         </div>
-      </div>
 
-      {/* Error message */}
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mx-auto max-w-2xl mb-4">
-          {error}
-        </div>
-      )}
-
-      {/* New Discussion Form */}
-      {showDiscussionForm && (
-        <div className="new-discussion-form">
-          <h3>Add a New Discussion</h3>
-          <input
-            type="text"
-            name="title"
-            placeholder="Discussion Title"
-            value={newDiscussion.title}
-            onChange={handleNewDiscussionChange}
-          />
-          <textarea
-            name="description"
-            placeholder="Discussion Description"
-            value={newDiscussion.description}
-            onChange={handleNewDiscussionChange}
-          />
-          <select
-            name="category"
-            value={newDiscussion.category}
-            onChange={handleNewDiscussionChange}
-          >
-            <option value="Beach Experiences">Beach Experiences</option>
-            <option value="Water Quality Awareness">
-              Water Quality Awareness
-            </option>
-            <option value="Beach Events and Cleanups">
-              Beach Events and Cleanups
-            </option>
-          </select>
-          <button className="button" onClick={handleAddDiscussion}>
-            Add Discussion
-          </button>
-        </div>
-      )}
-
-      {/* Back to Discussions Button */}
-      {activeDiscussion && (
-        <button
-          className="back-button mx-auto block mb-4"
-          onClick={handleBackToDiscussions}
-        >
-          Back to Discussions
-        </button>
-      )}
-
-      <div className="discussion-list">
-        {filteredDiscussions.length > 0 ? (
-          filteredDiscussions.map((discussion) => (
-            <div key={discussion._id} className="discussion-card">
-              <h2>{discussion.title || "Discussion"}</h2>
-              <p className="discussion-category">
-                Category: {discussion.category}
-              </p>
-              <p>{discussion.content}</p>
-              <div className="discussion-info">
-                <span>Author: {discussion.author || "Anonymous"}</span>
-                <span className="time-posted">
-                  Time Posted: {formatDate(discussion.created_at)}
-                </span>
-              </div>
+        {showDiscussionForm && (
+          <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+            <h3 className="text-xl font-semibold text-blue-700 mb-4">
+              Start a New Discussion
+            </h3>
+            <div className="space-y-4">
+              <input
+                type="text"
+                name="title"
+                className="w-full p-2 border rounded-xl"
+                placeholder="Discussion Title"
+                value={newDiscussion.title}
+                onChange={handleNewDiscussionChange}
+              />
+              <textarea
+                name="content"
+                className="w-full p-2 border rounded-xl h-32"
+                placeholder="Discussion Content"
+                value={newDiscussion.content}
+                onChange={handleNewDiscussionChange}
+              />
+              <select
+                name="category"
+                className="w-full p-2 border rounded-xl"
+                value={newDiscussion.category}
+                onChange={handleNewDiscussionChange}
+              >
+                {Object.values(DISCUSSION_CATEGORIES).map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
               <button
+                className="bg-gradient-to-r from-cyan-600 to-blue-700 text-white px-6 py-2 rounded-xl hover:opacity-90 transition-opacity"
+                onClick={handleAddDiscussion}
+              >
+                Create Discussion
+              </button>
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mx-auto max-w-2xl mb-4">
+            {error}
+          </div>
+        )}
+
+        <div className="space-y-4">
+          {filteredDiscussions.map((discussion) => (
+            <div
+              key={discussion.id}
+              className="bg-white rounded-xl shadow-sm p-6"
+            >
+              <h2 className="text-xl font-semibold text-blue-700 mb-2">
+                {discussion.title}
+              </h2>
+              <p className="text-gray-700 mb-4">{discussion.content}</p>
+              <div className="flex justify-between text-sm text-gray-500 mb-4">
+                <span className="bg-cyan-50 text-cyan-700 px-3 py-1 rounded-full text-sm">
+                  {discussion.category}
+                </span>
+                <span>{formatDate(discussion.createdAt)}</span>
+              </div>
+
+              <button
+                className="flex items-center gap-2 text-cyan-600 hover:text-cyan-700 text-sm font-medium"
                 onClick={() => {
-                  if (activeDiscussion === discussion._id) {
+                  if (activeDiscussion === discussion.id) {
                     setActiveDiscussion(null);
                   } else {
-                    setActiveDiscussion(discussion._id);
-                    fetchComments(discussion._id);
+                    setActiveDiscussion(discussion.id);
+                    fetchComments(discussion.id);
                   }
                 }}
               >
-                {activeDiscussion === discussion._id
+                <MessageSquare size={16} />
+                {activeDiscussion === discussion.id
                   ? "Hide Comments"
-                  : "View Comments"}
+                  : "Show Comments"}
               </button>
 
-              {/* Display comments for active discussion */}
-              {activeDiscussion === discussion._id &&
-                comments[discussion._id] && (
-                  <div className="comments-section">
-                    <h4 className="font-semibold text-gray-800 mb-2">
-                      {comments[discussion._id].length > 0
-                        ? `Comments (${comments[discussion._id].length})`
-                        : "No comments yet"}
-                    </h4>
-
-                    {comments[discussion._id].map((comment) => (
-                      <div key={comment._id} className="comment">
-                        <p>{comment.content}</p>
-                        <div className="flex justify-between text-xs text-gray-500">
-                          <span className="comment-author">
-                            By {comment.author || "Anonymous"}
-                          </span>
-                          <span className="time-posted">
-                            {formatDate(comment.created_at)}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-
-                    {/* Comment input box */}
-                    <div className="comment-box">
-                      <textarea
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        placeholder="Add a comment..."
-                      />
-                      <button onClick={() => handleAddComment(discussion._id)}>
-                        Add Comment
-                      </button>
-                    </div>
-                  </div>
-                )}
+              {activeDiscussion === discussion.id && (
+                <CommentsSection discussionId={discussion.id} />
+              )}
             </div>
-          ))
-        ) : (
-          <div className="text-center p-8 bg-white rounded-lg shadow-md">
-            <p>
-              {searchQuery || selectedCategory !== "All"
-                ? "No discussions found matching your criteria."
-                : "No discussions found. Be the first to start a discussion!"}
-            </p>
-          </div>
-        )}
-      </div>
+          ))}
 
-      <footer className="bg-blue-800 text-white py-6 mt-12">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-4 md:mb-0">
-              <h3 className="text-xl font-bold">SeaClear</h3>
-              <p className="text-blue-200">Keeping beaches safe</p>
+          {filteredDiscussions.length === 0 && !error && (
+            <div className="text-center p-8 bg-white rounded-xl shadow-sm">
+              <p className="text-gray-600">
+                {searchQuery || selectedCategory !== "All"
+                  ? "No discussions found matching your criteria."
+                  : "No discussions found. Be the first to start a discussion!"}
+              </p>
             </div>
-            <div className="flex space-x-4">
-              <Link to="/" className="text-blue-200 hover:text-white">
-                Home
-              </Link>
-              <Link to="/education" className="text-blue-200 hover:text-white">
-                Learn
-              </Link>
-              <Link to="/login" className="text-blue-200 hover:text-white">
-                Admin
-              </Link>
-            </div>
-          </div>
+          )}
         </div>
-      </footer>
+      </main>
     </div>
   );
 };

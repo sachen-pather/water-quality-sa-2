@@ -60,12 +60,6 @@ const Sidebar = () => {
           to="/admin/beaches"
           active={location.pathname === "/admin/beaches"}
         />
-        <SidebarLink
-          icon={AlertTriangle}
-          text="View Reports"
-          to="/admin/reports"
-          active={location.pathname === "/admin/reports"}
-        />
       </nav>
     </div>
   );

@@ -60,6 +60,13 @@ const Header = ({
           {!showBackButton && (
             <nav className="hidden md:flex items-center space-x-8">
               <Link
+                to="/about"
+                className="text-white hover:text-cyan-100 font-medium transition-colors relative group"
+              >
+                About
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-200 transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+              <Link
                 to="/education"
                 className="text-white hover:text-cyan-100 font-medium transition-colors relative group"
               >
@@ -94,23 +101,28 @@ const Header = ({
 
           {/* Mobile menu button - only shown on smaller screens */}
           <div className="md:hidden flex items-center">
-            {!showBackButton &&
-              (isAdmin ? (
-                <button
-                  onClick={handleLogout}
-                  className="bg-white text-blue-700 px-4 py-1.5 rounded-full hover:bg-cyan-50 transition-colors font-medium shadow-sm text-sm flex items-center gap-1"
-                >
-                  <LogOut size={14} />
-                  Logout
-                </button>
-              ) : (
+            {!showBackButton && (
+              <div className="md:hidden flex justify-center pb-3 space-x-6">
                 <Link
-                  to="/login"
-                  className="bg-white text-blue-700 px-4 py-1.5 rounded-full hover:bg-cyan-50 transition-colors font-medium shadow-sm text-sm"
+                  to="/about"
+                  className="text-white hover:text-cyan-100 font-medium text-sm"
                 >
-                  Admin
+                  About
                 </Link>
-              ))}
+                <Link
+                  to="/education"
+                  className="text-white hover:text-cyan-100 font-medium text-sm"
+                >
+                  Learn More
+                </Link>
+                <Link
+                  to="/community"
+                  className="text-white hover:text-cyan-100 font-medium text-sm"
+                >
+                  Community
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 

@@ -6,8 +6,7 @@ import { Search } from "lucide-react";
 import BeachCard from "@/components/BeachCard";
 import Header from "@/components/Header";
 import useBeachData from "@/hooks/useBeachData";
-import { beachNameToUrl } from "@/utils/formatters";
-import { beachLocationsData } from "@/services/mockData";
+import { formatDate, formatEnterococcusCount } from "@/utils/formatters";
 
 // Custom icon for Leaflet markers
 const beachIcon = new L.Icon({
@@ -23,21 +22,30 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [filteredBeaches, setFilteredBeaches] = useState(beachLocationsData);
+  const [filteredBeaches, setFilteredBeaches] = useState([]);
   const { beaches, isLoading, error } = useBeachData();
 
-  // When beach data loads, merge it with location data
+  // When beach data loads, set it as the initial filtered beaches
   useEffect(() => {
     if (beaches && beaches.length > 0) {
+      console.log("Beaches loaded:", beaches);
       setFilteredBeaches(beaches);
     }
   }, [beaches]);
 
   const handleBeachSelection = useCallback(
     (beach) => {
-      const beachNameForUrl = beachNameToUrl(beach.name);
+      if (!beach || !beach.name) {
+        console.error("Invalid beach selected:", beach);
+        return;
+      }
+
+      const beachNameForUrl = beach.name.toLowerCase().replace(/\s+/g, "-");
       navigate(`/beach/${beachNameForUrl}`, {
-        state: { coordinates: [beach.lat, beach.lng] },
+        state: {
+          coordinates: beach.coordinates,
+          beachCode: beach.code,
+        },
       });
     },
     [navigate]
@@ -48,25 +56,25 @@ const HomePage = () => {
       const input = e.target.value.toLowerCase();
       setSearchInput(input);
 
-      if (input.trim().length > 0) {
-        const filtered = filteredBeaches.filter(
+      if (input.trim().length > 0 && beaches && beaches.length > 0) {
+        const filtered = beaches.filter(
           (beach) =>
-            beach.name.toLowerCase().includes(input) ||
-            (beach.address && beach.address.toLowerCase().includes(input))
+            (beach.name && beach.name.toLowerCase().includes(input)) ||
+            (beach.location && beach.location.toLowerCase().includes(input))
         );
         setSearchResults(filtered.slice(0, 5)); // Limit to 5 results for dropdown
         setFilteredBeaches(filtered); // Update filtered beaches for cards
       } else {
         setSearchResults([]);
-        setFilteredBeaches(beaches.length > 0 ? beaches : beachLocationsData); // Reset to all beaches when search is empty
+        setFilteredBeaches(beaches || []); // Reset to all beaches when search is empty
       }
     },
-    [beaches, filteredBeaches]
+    [beaches]
   );
 
   return (
     <div className="min-h-screen">
-      {/* Only the Header component */}
+      {/* Header component */}
       <Header title="SeaClear" />
 
       {/* Main content with gradient background */}
@@ -98,11 +106,11 @@ const HomePage = () => {
                 <ul className="bg-white mt-2 rounded-lg shadow-md z-10 relative">
                   {searchResults.map((result, index) => (
                     <li
-                      key={`result-${index}`}
+                      key={`search-result-${result.id || result.code || index}`}
                       onClick={() => handleBeachSelection(result)}
                       className="p-2 hover:bg-blue-100 cursor-pointer text-blue-900"
                     >
-                      {result.name}, {result.address}
+                      {result.name}, {result.location}
                     </li>
                   ))}
                 </ul>
@@ -120,54 +128,104 @@ const HomePage = () => {
               </h2>
             </div>
             <div className="w-full h-96 rounded-lg overflow-hidden shadow-lg">
-              <MapContainer
-                center={[-33.9249, 18.4241]}
-                zoom={10}
-                style={{ height: "100%", width: "100%" }}
-              >
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                {filteredBeaches.map((beach) => (
-                  <Marker
-                    key={beach.name}
-                    position={[beach.lat, beach.lng]}
-                    icon={beachIcon}
-                    eventHandlers={{
-                      mouseover: (e) => {
-                        e.target.openPopup();
-                      },
-                      mouseout: (e) => {
-                        e.target.closePopup();
-                      },
-                      click: () => {
-                        handleBeachSelection(beach);
-                      },
-                    }}
-                  >
-                    <Popup>
-                      <div className="font-medium">{beach.name}</div>
-                      <div className="text-sm">{beach.address}</div>
-                    </Popup>
-                  </Marker>
-                ))}
-              </MapContainer>
+              {!isLoading && filteredBeaches.length > 0 && (
+                <MapContainer
+                  center={[-33.9249, 18.4241]} // Default Cape Town coordinates
+                  zoom={10}
+                  style={{ height: "100%", width: "100%" }}
+                >
+                  <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  />
+                  {filteredBeaches.map((beach) => {
+                    // Safety check for valid coordinates
+                    if (
+                      !beach.coordinates ||
+                      !Array.isArray(beach.coordinates) ||
+                      beach.coordinates.length !== 2 ||
+                      beach.coordinates[0] === undefined ||
+                      beach.coordinates[1] === undefined
+                    ) {
+                      console.warn(
+                        `Beach ${beach.name} (${beach.code}) has invalid coordinates:`,
+                        beach.coordinates
+                      );
+                      return null;
+                    }
+
+                    return (
+                      <Marker
+                        key={`marker-${beach.id || beach.code}`}
+                        position={beach.coordinates}
+                        icon={beachIcon}
+                        eventHandlers={{
+                          mouseover: (e) => {
+                            e.target.openPopup();
+                          },
+                          mouseout: (e) => {
+                            e.target.closePopup();
+                          },
+                          click: () => {
+                            handleBeachSelection(beach);
+                          },
+                        }}
+                      >
+                        <Popup>
+                          <div className="font-medium">{beach.name}</div>
+                          <div className="text-sm">{beach.location}</div>
+                          <div className="text-sm">
+                            Water Quality: {beach.is_safe ? "Safe" : "Unsafe"}
+                          </div>
+                          <div className="text-sm">
+                            Last Sampled: {formatDate(beach.date_sampled)}
+                          </div>
+                          <div className="text-sm">
+                            Enterococcus:{" "}
+                            {formatEnterococcusCount(
+                              beach.values && beach.values.length > 0
+                                ? beach.values[0]
+                                : null
+                            )}
+                          </div>
+                        </Popup>
+                      </Marker>
+                    );
+                  })}
+                </MapContainer>
+              )}
+              {isLoading && (
+                <div className="w-full h-full flex items-center justify-center bg-blue-300 bg-opacity-50">
+                  <div className="text-white text-xl font-semibold">
+                    Loading map data...
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
           {isLoading ? (
-            <div className="text-center text-white">Loading beach data...</div>
+            <div className="text-center py-10 text-white text-xl">
+              Loading beach data...
+            </div>
           ) : error ? (
-            <div className="text-center text-red-300">{error}</div>
+            <div className="text-center py-10 text-red-300 text-xl">
+              {error}
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredBeaches.map((beach, index) => (
+              {filteredBeaches.map((beach) => (
                 <BeachCard
-                  key={index}
+                  key={`beach-card-${beach.id || beach.code}`}
                   beach={beach}
                   onSelect={handleBeachSelection}
                   waterQuality={beach.is_safe}
+                  lastSampled={formatDate(beach.date_sampled)}
+                  enterococcusCount={formatEnterococcusCount(
+                    beach.values && beach.values.length > 0
+                      ? beach.values[0]
+                      : null
+                  )}
                 />
               ))}
             </div>

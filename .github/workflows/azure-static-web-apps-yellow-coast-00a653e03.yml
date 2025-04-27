@@ -29,6 +29,9 @@ jobs:
         run: npm run build
         env:
           VITE_OPENWEATHER_API_KEY: ${{ secrets.VITE_OPENWEATHER_API_KEY }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_UPLOAD_API_URL: ${{ secrets.VITE_UPLOAD_API_URL }}
+          VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
 
       - name: Deploy to Azure Static Web Apps
         id: builddeploy

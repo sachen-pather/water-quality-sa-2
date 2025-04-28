@@ -441,7 +441,7 @@ const useBeachData = (beachUrlName = null) => {
     try {
       setIsLoading(true);
       // Use the actual API URL from your environment or default to localhost
-      const API_URL = import.meta.env.VITE_API_URL || "https://localhost:7111";
+      const API_URL = import.meta.env.VITE_API_URL;
       const response = await axios.get(`${API_URL}/beach`);
 
       // Transform the API response to match the format expected by the frontend
@@ -472,8 +472,7 @@ const useBeachData = (beachUrlName = null) => {
           return;
         }
 
-        const API_URL =
-          import.meta.env.VITE_API_URL || "https://localhost:7111";
+        const API_URL = import.meta.env.VITE_API_URL;
         const response = await axios.get(`${API_URL}/beach/${beachCode}`);
 
         // Transform the single beach data

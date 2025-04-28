@@ -123,7 +123,7 @@ const BeachDetailsPage = () => {
 
     try {
       setIsLoadingBeach(true);
-      const API_URL = import.meta.env.VITE_API_URL || "https://localhost:7111";
+      const API_URL = import.meta.env.VITE_API_URL;
       const response = await axios.get(`${API_URL}/beach/${beachCode}`);
 
       // Format the data properly

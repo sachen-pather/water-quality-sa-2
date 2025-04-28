@@ -12,7 +12,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Mock API implementation using local data
 
-const API_URL = import.meta.env.VITE_API_URL || "https://localhost:7111";
+const API_URL = import.meta.env.VITE_API_URL;
 
 // Helper function to transform beach data
 const transformBeachData = (data) => {

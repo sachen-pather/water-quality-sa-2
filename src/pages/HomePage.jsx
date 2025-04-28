@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -78,9 +80,9 @@ const HomePage = () => {
       <Header title="SeaClear" />
 
       {/* Main content with gradient background */}
-      <div className="bg-gradient-to-b from-blue-400 to-blue-600">
+      <div className="bg-gradient-to-b from-blue-800 to-cyan-500">
         {/* Hero Section */}
-        <div className="pt-10 pb-8">
+        <div className="pt-12 pb-10">
           <div className="container mx-auto px-6 text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
               Find Your Perfect Beach
@@ -96,19 +98,19 @@ const HomePage = () => {
                   placeholder="Search for beaches..."
                   value={searchInput}
                   onChange={handleSearchInput}
-                  className="w-full px-4 py-2 rounded-full focus:outline-none"
+                  className="w-full px-4 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-md"
                 />
-                <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500">
+                <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-cyan-600">
                   <Search size={20} />
                 </button>
               </div>
               {searchResults.length > 0 && (
-                <ul className="bg-white mt-2 rounded-lg shadow-md z-10 relative">
+                <ul className="bg-white mt-2 rounded-lg shadow-lg z-10 relative border border-cyan-100">
                   {searchResults.map((result, index) => (
                     <li
                       key={`search-result-${result.id || result.code || index}`}
                       onClick={() => handleBeachSelection(result)}
-                      className="p-2 hover:bg-blue-100 cursor-pointer text-blue-900"
+                      className="p-3 hover:bg-cyan-50 cursor-pointer text-cyan-900 border-b border-cyan-100 last:border-b-0"
                     >
                       {result.name}, {result.location}
                     </li>
@@ -127,7 +129,7 @@ const HomePage = () => {
                 Beaches in Cape Town
               </h2>
             </div>
-            <div className="w-full h-96 rounded-lg overflow-hidden shadow-lg">
+            <div className="w-full h-96 rounded-xl overflow-hidden shadow-xl border-4 border-white">
               {!isLoading && filteredBeaches.length > 0 && (
                 <MapContainer
                   center={[-33.9249, 18.4241]} // Default Cape Town coordinates
@@ -196,7 +198,7 @@ const HomePage = () => {
               )}
               {isLoading && (
                 <div className="w-full h-full flex items-center justify-center bg-blue-300 bg-opacity-50">
-                  <div className="text-white text-xl font-semibold">
+                  <div className="text-white text-xl font-semibold animate-pulse">
                     Loading map data...
                   </div>
                 </div>
@@ -205,7 +207,7 @@ const HomePage = () => {
           </div>
 
           {isLoading ? (
-            <div className="text-center py-10 text-white text-xl">
+            <div className="text-center py-10 text-white text-xl animate-pulse">
               Loading beach data...
             </div>
           ) : error ? (
@@ -233,7 +235,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      <footer className="bg-blue-800 text-white py-6">
+      <footer className="bg-gradient-to-r from-blue-900 to-cyan-700 text-white py-8">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
@@ -241,13 +243,22 @@ const HomePage = () => {
               <p className="text-blue-200">Keeping beaches safe</p>
             </div>
             <div className="flex space-x-4">
-              <Link to="/education" className="text-blue-200 hover:text-white">
+              <Link
+                to="/education"
+                className="text-cyan-200 hover:text-white transition-colors"
+              >
                 Learn More
               </Link>
-              <Link to="/community" className="text-blue-200 hover:text-white">
+              <Link
+                to="/community"
+                className="text-cyan-200 hover:text-white transition-colors"
+              >
                 Community
               </Link>
-              <Link to="/login" className="text-blue-200 hover:text-white">
+              <Link
+                to="/login"
+                className="text-cyan-200 hover:text-white transition-colors"
+              >
                 Admin
               </Link>
             </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { beachService } from "@/services/beachService";
+import { beachService } from "@/services/BeachService";
 import { formatDate } from "@/utils/formatters";
 import BeachEditModal from "@/components/BeachEditModal";
 import useBeachData from "@/hooks/useBeachData";

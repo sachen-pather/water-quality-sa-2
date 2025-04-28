@@ -30,7 +30,9 @@ const UploadContent = () => {
 
     try {
       // Use the environment variable for API URL
-      const uploadUrl = import.meta.env.VITE_UPLOAD_API_URL;
+      const uploadUrl =
+        import.meta.env.VITE_UPLOAD_API_URL ||
+        "https://waterqualityapi20250427235311.azurewebsites.net/upload";
       const response = await axios.post(uploadUrl, formData, {
         headers: {
           "Content-Type": "multipart/form-data",

@@ -38,4 +38,4 @@ export const geminiService = {
       return `${beachName} is one of Cape Town's beautiful beaches offering visitors a chance to enjoy the stunning coastline of South Africa.`;
     }
   },
-};
+}; //

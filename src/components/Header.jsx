@@ -71,7 +71,7 @@ const Header = ({
               to="/community"
               className="text-white hover:text-cyan-100 font-medium transition-colors"
             >
-              <Discussions></Discussions>
+              Discussions
             </Link>
             {isAdmin ? (
               <button
@@ -140,7 +140,7 @@ const Header = ({
               to="/community"
               className="block text-white hover:bg-blue-600 px-3 py-2 rounded-md text-sm"
             >
-              <Discussions></Discussions>
+              Discussions
             </Link>
             {isAdmin ? (
               <button

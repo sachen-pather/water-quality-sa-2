@@ -340,33 +340,11 @@ const HomePage = () => {
         </div>
       </div>
 
-      <footer className="bg-gradient-to-r from-blue-900 to-cyan-700 text-white py-8">
+      <footer className="bg-gradient-to-r from-cyan-600 to-blue-500 text-white py-6">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-4 md:mb-0">
-              <h3 className="text-xl font-bold">SeaClear</h3>
-              <p className="text-blue-200">Keeping beaches safe</p>
-            </div>
-            <div className="flex space-x-4">
-              <Link
-                to="/education"
-                className="text-cyan-200 hover:text-white transition-colors"
-              >
-                Learn More
-              </Link>
-              <Link
-                to="/community"
-                className="text-cyan-200 hover:text-white transition-colors"
-              >
-                Community
-              </Link>
-              <Link
-                to="/login"
-                className="text-cyan-200 hover:text-white transition-colors"
-              >
-                Admin
-              </Link>
-            </div>
+          <div className="flex flex-col items-center">
+            <h3 className="text-xl font-bold">SeaClear</h3>
+            <p className="text-blue-100">Sachen Pather - 0812354879</p>
           </div>
         </div>
       </footer>

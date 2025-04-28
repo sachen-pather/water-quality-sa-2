@@ -37,6 +37,63 @@ const getBeachImage = (image, code) => {
   return beachImages[Math.floor(Math.random() * beachImages.length)];
 };
 
+// Function to determine safety status based on enterococcus count
+const getSafetyStatus = (beach, providedWaterQuality) => {
+  // If water quality is explicitly provided as a string, use it
+  if (typeof providedWaterQuality === "string") {
+    return providedWaterQuality;
+  }
+
+  // If beach has values, determine status based on enterococcus count
+  if (beach.values && beach.values.length > 0) {
+    const ecoliCount = beach.values[0];
+
+    if (ecoliCount < 250) {
+      return "Safe";
+    } else if (ecoliCount >= 250 && ecoliCount <= 500) {
+      return "Caution";
+    } else if (ecoliCount > 500) {
+      return "Unsafe";
+    }
+  }
+
+  // Fall back to is_safe boolean if available
+  if (typeof beach.is_safe === "boolean" || typeof beach.is_safe === "number") {
+    return beach.is_safe === true || beach.is_safe === 1 ? "Safe" : "Unsafe";
+  }
+
+  // If we still don't have a status
+  return "Unknown";
+};
+
+// Function to get color class based on safety status
+const getStatusColorClass = (status) => {
+  switch (status) {
+    case "Safe":
+      return "text-green-600 font-semibold";
+    case "Caution":
+      return "text-yellow-600 font-semibold";
+    case "Unsafe":
+      return "text-red-600 font-semibold";
+    default:
+      return "text-gray-600";
+  }
+};
+
+// Function to get safety description based on status
+const getSafetyDescription = (status) => {
+  switch (status) {
+    case "Safe":
+      return "This beach is safe for swimming with low E. coli levels (below 250 cfu/100ml).";
+    case "Caution":
+      return "Swimming at this beach requires caution. E. coli levels are moderate (250-500 cfu/100ml).";
+    case "Unsafe":
+      return "Swimming is not recommended. E. coli levels are high (above 500 cfu/100ml).";
+    default:
+      return "Water quality information is not available for this beach.";
+  }
+};
+
 const BeachCard = ({
   beach,
   onSelect,
@@ -53,9 +110,11 @@ const BeachCard = ({
   // Generate a unique key for this beach card
   const beachId = beach.id || `beach-${beach.code || ""}`;
 
-  // Determine water quality display value
-  const qualityDisplay =
-    waterQuality === 1 ? "Safe" : waterQuality === 0 ? "Unsafe" : "Unknown";
+  // Determine safety status
+  const safetyStatus = getSafetyStatus(beach, waterQuality);
+
+  // Get color class for status
+  const statusColorClass = getStatusColorClass(safetyStatus);
 
   return (
     <div
@@ -83,9 +142,7 @@ const BeachCard = ({
         <div className="mt-3 space-y-2">
           <div>
             <span className="font-semibold text-sm">Status: </span>
-            <span className={getWaterQualityColor(waterQuality)}>
-              {qualityDisplay}
-            </span>
+            <span className={statusColorClass}>{safetyStatus}</span>
           </div>
 
           <div>
@@ -99,7 +156,7 @@ const BeachCard = ({
           </div>
 
           <div>
-            <span className="font-semibold text-sm">Enterococcus: </span>
+            <span className="font-semibold text-sm">E. coli: </span>
             <span className="text-sm text-gray-700">
               {enterococcusCount ||
                 (beach.values && beach.values.length > 0
@@ -110,7 +167,7 @@ const BeachCard = ({
         </div>
 
         <p className="mt-3 text-sm text-gray-600">
-          {getWaterQualityDescription(waterQuality)}
+          {getSafetyDescription(safetyStatus)}
         </p>
       </div>
     </div>
@@ -126,12 +183,16 @@ BeachCard.propTypes = {
     coordinates: PropTypes.array,
     date_sampled: PropTypes.string,
     values: PropTypes.array,
-    is_safe: PropTypes.bool,
+    is_safe: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
     sampling_frequency: PropTypes.string,
   }).isRequired,
   onSelect: PropTypes.func.isRequired,
   image: PropTypes.string,
-  waterQuality: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  waterQuality: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.bool,
+    PropTypes.number,
+  ]),
   lastSampled: PropTypes.string,
   enterococcusCount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };

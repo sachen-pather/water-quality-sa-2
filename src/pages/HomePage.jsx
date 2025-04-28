@@ -4,21 +4,95 @@ import { useCallback, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
+import "leaflet/dist/leaflet.css"; // Ensure Leaflet CSS is imported
 import { Search } from "lucide-react";
 import BeachCard from "@/components/BeachCard";
 import Header from "@/components/Header";
 import useBeachData from "@/hooks/useBeachData";
 import { formatDate, formatEnterococcusCount } from "@/utils/formatters";
 
-// Custom icon for Leaflet markers
-const beachIcon = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+// Create safety-based marker icons
+const safeIcon = new L.Icon({
+  iconUrl:
+    "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
 });
+
+const cautionIcon = new L.Icon({
+  iconUrl:
+    "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
+const unsafeIcon = new L.Icon({
+  iconUrl:
+    "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
+const defaultIcon = new L.Icon({
+  iconUrl:
+    "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
+// Function to determine icon based on enterococcus count
+const getMarkerIcon = (beach) => {
+  if (!beach.values || beach.values.length === 0) {
+    return defaultIcon;
+  }
+
+  const ecoliCount = beach.values[0];
+
+  if (ecoliCount < 250) {
+    return safeIcon;
+  } else if (ecoliCount >= 250 && ecoliCount <= 500) {
+    return cautionIcon;
+  } else if (ecoliCount > 500) {
+    return unsafeIcon;
+  } else {
+    return defaultIcon;
+  }
+};
+
+// Function to get safety status text
+const getSafetyStatus = (beach) => {
+  if (!beach.values || beach.values.length === 0) {
+    return "Unknown";
+  }
+
+  const ecoliCount = beach.values[0];
+
+  if (ecoliCount < 250) {
+    return "Safe";
+  } else if (ecoliCount >= 250 && ecoliCount <= 500) {
+    return "Caution";
+  } else if (ecoliCount > 500) {
+    return "Unsafe";
+  } else {
+    return "Unknown";
+  }
+};
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -128,6 +202,20 @@ const HomePage = () => {
               <h2 className="text-2xl font-bold text-white">
                 Beaches in Cape Town
               </h2>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center">
+                  <div className="w-3 h-3 rounded-full bg-green-500 mr-1"></div>
+                  <span className="text-white text-sm">Safe</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 rounded-full bg-yellow-500 mr-1"></div>
+                  <span className="text-white text-sm">Caution</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 rounded-full bg-red-500 mr-1"></div>
+                  <span className="text-white text-sm">Unsafe</span>
+                </div>
+              </div>
             </div>
             <div className="w-full h-96 rounded-xl overflow-hidden shadow-xl border-4 border-white">
               {!isLoading && filteredBeaches.length > 0 && (
@@ -156,11 +244,15 @@ const HomePage = () => {
                       return null;
                     }
 
+                    // Determine marker icon based on safety
+                    const markerIcon = getMarkerIcon(beach);
+                    const safetyStatus = getSafetyStatus(beach);
+
                     return (
                       <Marker
                         key={`marker-${beach.id || beach.code}`}
                         position={beach.coordinates}
-                        icon={beachIcon}
+                        icon={markerIcon}
                         eventHandlers={{
                           mouseover: (e) => {
                             e.target.openPopup();
@@ -177,13 +269,26 @@ const HomePage = () => {
                           <div className="font-medium">{beach.name}</div>
                           <div className="text-sm">{beach.location}</div>
                           <div className="text-sm">
-                            Water Quality: {beach.is_safe ? "Safe" : "Unsafe"}
+                            Status:{" "}
+                            <span
+                              className={
+                                safetyStatus === "Safe"
+                                  ? "text-green-600 font-semibold"
+                                  : safetyStatus === "Caution"
+                                  ? "text-yellow-600 font-semibold"
+                                  : safetyStatus === "Unsafe"
+                                  ? "text-red-600 font-semibold"
+                                  : ""
+                              }
+                            >
+                              {safetyStatus}
+                            </span>
                           </div>
                           <div className="text-sm">
                             Last Sampled: {formatDate(beach.date_sampled)}
                           </div>
                           <div className="text-sm">
-                            Enterococcus:{" "}
+                            E. coli:{" "}
                             {formatEnterococcusCount(
                               beach.values && beach.values.length > 0
                                 ? beach.values[0]
@@ -221,7 +326,7 @@ const HomePage = () => {
                   key={`beach-card-${beach.id || beach.code}`}
                   beach={beach}
                   onSelect={handleBeachSelection}
-                  waterQuality={beach.is_safe}
+                  waterQuality={getSafetyStatus(beach)}
                   lastSampled={formatDate(beach.date_sampled)}
                   enterococcusCount={formatEnterococcusCount(
                     beach.values && beach.values.length > 0

@@ -442,6 +442,7 @@ const useBeachData = (beachUrlName = null) => {
       setIsLoading(true);
       // Use the actual API URL from your environment or default to localhost
       const API_URL = import.meta.env.VITE_API_URL;
+      console.log("API URL from hook:", API_URL); // Add this line for debugging
       const response = await axios.get(`${API_URL}/beach`);
 
       // Transform the API response to match the format expected by the frontend

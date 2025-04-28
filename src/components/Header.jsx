@@ -11,10 +11,10 @@ const Header = ({
   backLink = "/",
 }) => {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check admin status when component mounts
     const adminStatus = localStorage.getItem("isAdmin") === "true";
     setIsAdmin(adminStatus);
   }, []);
@@ -27,120 +27,137 @@ const Header = ({
 
   return (
     <header className="bg-gradient-to-r from-cyan-600 to-blue-700 shadow-md">
-      <div className="container mx-auto px-6">
-        <div className="flex justify-between items-center py-4">
+      <div className="container mx-auto px-4">
+        <div className="flex justify-between items-center h-14 md:h-16">
+          {/* Logo and Title Section */}
           <div className="flex items-center space-x-2">
             {showBackButton ? (
               <Link
                 to={backLink}
-                className="group flex items-center text-white hover:text-cyan-100 font-medium mr-4 transition-all duration-200"
+                className="group flex items-center text-white hover:text-cyan-100 font-medium transition-all duration-200"
               >
                 <ChevronLeft
-                  size={20}
-                  className="mr-1 transition-transform group-hover:-translate-x-1"
+                  size={18}
+                  className="transition-transform group-hover:-translate-x-1"
                 />
-                <span>Back</span>
+                <span className="text-sm">Back</span>
               </Link>
             ) : (
-              <Waves className="text-cyan-200 h-7 w-7 mr-2" />
+              <Waves className="text-cyan-200 h-6 w-6 md:h-7 md:w-7" />
             )}
 
             <Link to="/" className="group">
-              <div className="flex flex-col">
-                <h3 className="text-2xl font-bold text-white tracking-tight group-hover:text-cyan-100 transition-colors">
-                  {title}
-                </h3>
-                <p className="text-cyan-100 text-sm font-medium">
-                  Keeping beaches safe
-                </p>
-              </div>
+              <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight group-hover:text-cyan-100 transition-colors">
+                {title}
+              </h3>
             </Link>
           </div>
 
-          {!showBackButton && (
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                to="/about"
-                className="text-white hover:text-cyan-100 font-medium transition-colors relative group"
-              >
-                About
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-200 transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-              <Link
-                to="/education"
-                className="text-white hover:text-cyan-100 font-medium transition-colors relative group"
-              >
-                Learn More
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-200 transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-              <Link
-                to="/community"
-                className="text-white hover:text-cyan-100 font-medium transition-colors relative group"
-              >
-                Community
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-200 transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-              {isAdmin ? (
-                <button
-                  onClick={handleLogout}
-                  className="bg-white text-blue-700 px-5 py-2 rounded-full hover:bg-cyan-50 transition-colors font-medium shadow-sm hover:shadow-md flex items-center gap-2"
-                >
-                  <LogOut size={16} />
-                  Logout
-                </button>
-              ) : (
-                <Link
-                  to="/login"
-                  className="bg-white text-blue-700 px-5 py-2 rounded-full hover:bg-cyan-50 transition-colors font-medium shadow-sm hover:shadow-md"
-                >
-                  Admin Login
-                </Link>
-              )}
-            </nav>
-          )}
-
-          {/* Mobile menu button - only shown on smaller screens */}
-          <div className="md:hidden flex items-center">
-            {!showBackButton && (
-              <div className="md:hidden flex justify-center pb-3 space-x-6">
-                <Link
-                  to="/about"
-                  className="text-white hover:text-cyan-100 font-medium text-sm"
-                >
-                  About
-                </Link>
-                <Link
-                  to="/education"
-                  className="text-white hover:text-cyan-100 font-medium text-sm"
-                >
-                  Learn More
-                </Link>
-                <Link
-                  to="/community"
-                  className="text-white hover:text-cyan-100 font-medium text-sm"
-                >
-                  Community
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Mobile navigation - only shown on smaller screens */}
-        {!showBackButton && (
-          <div className="md:hidden flex justify-center pb-3 space-x-6">
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link
+              to="/about"
+              className="text-white hover:text-cyan-100 font-medium transition-colors"
+            >
+              About
+            </Link>
             <Link
               to="/education"
-              className="text-white hover:text-cyan-100 font-medium text-sm"
+              className="text-white hover:text-cyan-100 font-medium transition-colors"
             >
               Learn More
             </Link>
             <Link
               to="/community"
-              className="text-white hover:text-cyan-100 font-medium text-sm"
+              className="text-white hover:text-cyan-100 font-medium transition-colors"
             >
               Community
             </Link>
+            {isAdmin ? (
+              <button
+                onClick={handleLogout}
+                className="bg-white text-blue-700 px-4 py-1.5 rounded-full hover:bg-cyan-50 transition-colors font-medium shadow-sm flex items-center gap-2"
+              >
+                <LogOut size={16} />
+                Logout
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className="bg-white text-blue-700 px-4 py-1.5 rounded-full hover:bg-cyan-50 transition-colors font-medium shadow-sm"
+              >
+                Admin Login
+              </Link>
+            )}
+          </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden text-white p-2"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              {isMobileMenuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
+          </button>
+        </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden py-2 space-y-1">
+            <Link
+              to="/about"
+              className="block text-white hover:bg-blue-600 px-3 py-2 rounded-md text-sm"
+            >
+              About
+            </Link>
+            <Link
+              to="/education"
+              className="block text-white hover:bg-blue-600 px-3 py-2 rounded-md text-sm"
+            >
+              Learn More
+            </Link>
+            <Link
+              to="/community"
+              className="block text-white hover:bg-blue-600 px-3 py-2 rounded-md text-sm"
+            >
+              Community
+            </Link>
+            {isAdmin ? (
+              <button
+                onClick={handleLogout}
+                className="w-full text-left text-white hover:bg-blue-600 px-3 py-2 rounded-md text-sm flex items-center gap-2"
+              >
+                <LogOut size={16} />
+                Logout
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className="block text-white hover:bg-blue-600 px-3 py-2 rounded-md text-sm"
+              >
+                Admin Login
+              </Link>
+            )}
           </div>
         )}
       </div>

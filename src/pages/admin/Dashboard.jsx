@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Droplet, MessageSquare } from "lucide-react";
-import { beachService } from "@/services/beachService";
+import { beachService } from "@/services/BeachService";
 import { communityApi } from "@/services/api";
 
 // Dashboard card component

@@ -123,7 +123,9 @@ const BeachDetailsPage = () => {
 
     try {
       setIsLoadingBeach(true);
-      const API_URL = import.meta.env.VITE_API_URL;
+      const API_URL =
+        import.meta.env.VITE_API_URL ||
+        "https://waterqualityapi20250427235311.azurewebsites.net/";
       const response = await axios.get(`${API_URL}/beach/${beachCode}`);
 
       // Format the data properly

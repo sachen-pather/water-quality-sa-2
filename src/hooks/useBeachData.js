@@ -441,7 +441,9 @@ const useBeachData = (beachUrlName = null) => {
     try {
       setIsLoading(true);
       // Use the actual API URL from your environment or default to localhost
-      const API_URL = import.meta.env.VITE_API_URL;
+      const API_URL =
+        import.meta.env.VITE_API_URL ||
+        "https://waterqualityapi20250427235311.azurewebsites.net/";
       console.log("API URL from hook:", API_URL); // Add this line for debugging
       const response = await axios.get(`${API_URL}/beach`);
 
@@ -473,7 +475,9 @@ const useBeachData = (beachUrlName = null) => {
           return;
         }
 
-        const API_URL = import.meta.env.VITE_API_URL;
+        const API_URL =
+          import.meta.env.VITE_API_URL ||
+          "https://waterqualityapi20250427235311.azurewebsites.net/";
         const response = await axios.get(`${API_URL}/beach/${beachCode}`);
 
         // Transform the single beach data

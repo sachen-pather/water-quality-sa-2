@@ -12,7 +12,9 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Mock API implementation using local data
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://waterqualityapi20250427235311.azurewebsites.net/";
 
 // Helper function to transform beach data
 const transformBeachData = (data) => {

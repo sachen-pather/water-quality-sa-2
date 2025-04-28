@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://waterqualityapi20250427235311.azurewebsites.net/";
 
 export const beachService = {
   getAllBeaches: async () => {

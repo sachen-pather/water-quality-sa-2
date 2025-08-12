@@ -407,19 +407,28 @@ const urlNameToBeachCodeMapping = createUrlNameMapping();
 
 // Utility function to transform API data to frontend format
 const transformBeachData = (apiBeach) => {
+  // Use the correct property name 'code'
   const beachInfo =
-    beachCodeToInfo[apiBeach.beachCode] ||
-    getDefaultBeachInfo(apiBeach.beachCode);
+    beachCodeToInfo[apiBeach.code] || getDefaultBeachInfo(apiBeach.code);
+  const latestReading = apiBeach.waterQualityReadings?.[0] || {}; // Use an empty object as a fallback to prevent errors
 
   return {
+    // Properties from the top-level beach object
     id: apiBeach.id,
-    code: apiBeach.beachCode,
+    code: apiBeach.code,
+
+    // Properties from our local mapping
     name: beachInfo.name,
+    urlName: beachInfo.name.toLowerCase().replace(/\s+/g, "-"),
     location: beachInfo.location,
     coordinates: beachInfo.coordinates,
-    date_sampled: apiBeach.samplingDate,
-    values: [apiBeach.enterococcusCount],
-    is_safe: apiBeach.isWithinSafetyThreshold,
+
+    // Properties from the nested latestReading object
+    date_sampled: latestReading.samplingDate,
+    values: [latestReading.enterococcusCount],
+    is_safe: latestReading.isWithinSafetyThreshold,
+
+    // This property may not exist in your API response, add it if it does
     sampling_frequency: apiBeach.samplingFrequency,
   };
 };
@@ -443,7 +452,7 @@ const useBeachData = (beachUrlName = null) => {
       // Use the actual API URL from your environment or default to localhost
       const API_URL =
         import.meta.env.VITE_API_URL ||
-        "https://waterqualityapi20250427235311.azurewebsites.net/";
+        "https://waterqualityapi20250812142739.azurewebsites.net";
       console.log("API URL from hook:", API_URL); // Add this line for debugging
       const response = await axios.get(`${API_URL}/beach`);
 
@@ -477,7 +486,7 @@ const useBeachData = (beachUrlName = null) => {
 
         const API_URL =
           import.meta.env.VITE_API_URL ||
-          "https://waterqualityapi20250427235311.azurewebsites.net/";
+          "https://waterqualityapi20250812142739.azurewebsites.net";
         const response = await axios.get(`${API_URL}/beach/${beachCode}`);
 
         // Transform the single beach data

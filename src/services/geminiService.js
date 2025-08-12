@@ -7,7 +7,7 @@ const GEMINI_API_URL =
 
 export const geminiService = {
   getBeachDescription: async (beachName, location) => {
-    // Try with primary API key first
+    // Your existing beach description code stays the same
     try {
       const response = await axios.post(
         `${GEMINI_API_URL}?key=${PRIMARY_API_KEY}`,
@@ -38,7 +38,6 @@ export const geminiService = {
         primaryError.message
       );
 
-      // Try with fallback API key
       try {
         const fallbackResponse = await axios.post(
           `${GEMINI_API_URL}?key=${FALLBACK_API_KEY}`,
@@ -66,9 +65,78 @@ export const geminiService = {
         return description;
       } catch (fallbackError) {
         console.error("Both API keys failed:", fallbackError);
-        // Return default description if both API calls fail
         return `${beachName} is one of Cape Town's beautiful beaches offering visitors a chance to enjoy the stunning coastline of South Africa.`;
       }
+    }
+  },
+
+  // Simple moderation function - returns true to approve, false to reject
+  shouldApprovePost: async (content, beachName) => {
+    const moderationPrompt = `
+You are moderating a post for ${beachName} beach in Cape Town. 
+
+Post content: "${content}"
+
+Should this post be APPROVED or REJECTED?
+
+APPROVE if it contains:
+- Beach experiences, conditions, or observations
+- Helpful information about the beach
+- Questions about beach activities
+- Constructive feedback
+
+REJECT if it contains:
+- Hate speech, spam, inappropriate content
+- Content unrelated to beaches
+- Offensive language
+
+Respond with only: APPROVE or REJECT
+`;
+
+    try {
+      const response = await this.makeGeminiRequest(moderationPrompt);
+      const decision = response.data.candidates[0].content.parts[0].text
+        .trim()
+        .toUpperCase();
+
+      return decision === "APPROVE";
+    } catch (error) {
+      console.error("Moderation failed:", error);
+      // If AI fails, reject by default for safety
+      return false;
+    }
+  },
+
+  // Helper function with fallback API key
+  makeGeminiRequest: async (prompt) => {
+    const requestBody = {
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: prompt }],
+        },
+      ],
+    };
+
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    try {
+      const response = await axios.post(
+        `${GEMINI_API_URL}?key=${PRIMARY_API_KEY}`,
+        requestBody,
+        { headers }
+      );
+      return response;
+    } catch (primaryError) {
+      console.warn("Primary API key failed, trying fallback");
+      const fallbackResponse = await axios.post(
+        `${GEMINI_API_URL}?key=${FALLBACK_API_KEY}`,
+        requestBody,
+        { headers }
+      );
+      return fallbackResponse;
     }
   },
 };

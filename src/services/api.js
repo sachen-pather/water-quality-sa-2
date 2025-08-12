@@ -14,7 +14,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
-  "https://waterqualityapi20250427235311.azurewebsites.net/";
+  "https://waterqualityapi20250812142739.azurewebsites.net";
 
 // Helper function to transform beach data
 const transformBeachData = (data) => {
@@ -32,8 +32,8 @@ const transformBeachData = (data) => {
 export const beachesApi = {
   getAllBeaches: async () => {
     try {
+      // Updated endpoint path
       const response = await axios.get(`${API_URL}/beach`);
-      // Transform each beach record
       const transformedData = response.data.map(transformBeachData);
       return { data: transformedData };
     } catch (error) {
@@ -44,8 +44,8 @@ export const beachesApi = {
 
   getBeachByName: async (beachCode) => {
     try {
+      // Updated endpoint path
       const response = await axios.get(`${API_URL}/beach/${beachCode}`);
-      // Transform single beach record
       const transformedData = transformBeachData(response.data);
       return { data: transformedData };
     } catch (error) {
@@ -193,7 +193,7 @@ export const discussionsApi = {
   createComment: async (discussionId, comment) => {
     try {
       const response = await axios.post(
-        `${API_URL}/api/CommunityDiscussion/${discussionId}/comments`,
+        `${API_URL}/api/CommunityDiscussion/api/${discussionId}/comments`,
         { content: comment }
       );
       return { data: response.data };

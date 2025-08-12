@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { CheckSquare, XSquare } from "lucide-react";
+import { CheckSquare, XSquare, Bot, Zap } from "lucide-react";
 import { communityApi } from "@/services/api";
+import { geminiService } from "@/services/geminiService";
 import { formatDate } from "@/utils/formatters";
 
 // Helper function to get beach name from code
 const getBeachNameFromCode = (beachCode) => {
   const beachMap = {
-    // Add a mapping of beach codes to names
     XCN08: "Silverstroomstrand Tidal Pool",
     XCN14: "Silverstroomstrand Lifeguard Building",
     XCN07: "Melkbosstrand",
@@ -80,7 +80,6 @@ const getBeachNameFromCode = (beachCode) => {
     CS29: "Gordons Bay Milkwoods",
     XCS08: "Gordons Bay Bikini Beach",
     XCS09: "Kogel Bay Beach",
-    // Add more mappings as needed
   };
 
   return beachMap[beachCode] || beachCode;
@@ -90,6 +89,7 @@ const PostsContent = () => {
   const [pendingPosts, setPendingPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [moderatingPosts, setModeratingPosts] = useState(new Set());
 
   useEffect(() => {
     fetchPendingPosts();
@@ -100,12 +100,11 @@ const PostsContent = () => {
       setIsLoading(true);
       const response = await communityApi.getPendingPosts();
 
-      // Transform the backend data structure to match the expected frontend format
       const transformedPosts = response.data.map((post) => ({
         post_id: post.id,
         beach_name: getBeachNameFromCode(post.beachCode),
         beach_code: post.beachCode,
-        author: "Anonymous", // Your backend currently doesn't have author/nickname
+        author: "Anonymous",
         content: post.content,
         created_at: post.createdAt,
       }));
@@ -117,6 +116,43 @@ const PostsContent = () => {
       setError("Failed to fetch pending posts. Please try again later.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAIModerate = async (post) => {
+    const postId = post.post_id;
+    setModeratingPosts((prev) => new Set(prev).add(postId));
+
+    try {
+      // Let Gemini decide
+      const shouldApprove = await geminiService.shouldApprovePost(
+        post.content,
+        post.beach_name
+      );
+
+      if (shouldApprove) {
+        await communityApi.approvePost(postId);
+      } else {
+        await communityApi.disapprovePost(postId);
+      }
+
+      // Refresh the list
+      fetchPendingPosts();
+    } catch (error) {
+      console.error("Error during AI moderation:", error);
+      alert("AI moderation failed. Try manual review.");
+    } finally {
+      setModeratingPosts((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(postId);
+        return newSet;
+      });
+    }
+  };
+
+  const handleBulkAIModerate = async () => {
+    for (const post of pendingPosts) {
+      await handleAIModerate(post);
     }
   };
 
@@ -150,9 +186,21 @@ const PostsContent = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-        Pending Community Posts
-      </h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-semibold text-gray-900">
+          Pending Community Posts
+        </h2>
+        {pendingPosts.length > 0 && (
+          <button
+            onClick={handleBulkAIModerate}
+            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center"
+          >
+            <Zap className="w-4 h-4 mr-2" />
+            AI Moderate All
+          </button>
+        )}
+      </div>
+
       {pendingPosts.length === 0 ? (
         <div className="bg-white p-6 rounded-lg shadow-md text-center">
           <p>No pending posts at the moment.</p>
@@ -176,7 +224,7 @@ const PostsContent = () => {
                     Date
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Action
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -196,6 +244,18 @@ const PostsContent = () => {
                       {formatDate(post.created_at)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex space-x-2">
+                      <button
+                        onClick={() => handleAIModerate(post)}
+                        disabled={moderatingPosts.has(post.post_id)}
+                        className="text-purple-600 hover:text-purple-900 transition-colors disabled:opacity-50"
+                        aria-label="AI Moderate"
+                      >
+                        {moderatingPosts.has(post.post_id) ? (
+                          <Bot size={18} className="animate-pulse" />
+                        ) : (
+                          <Bot size={18} />
+                        )}
+                      </button>
                       <button
                         onClick={() => handleApprove(post.post_id)}
                         className="text-green-600 hover:text-green-900 transition-colors"

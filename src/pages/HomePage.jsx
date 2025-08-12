@@ -111,18 +111,16 @@ const HomePage = () => {
 
   const handleBeachSelection = useCallback(
     (beach) => {
-      if (!beach || !beach.name) {
+      // 1. Check for the new urlName property
+      if (!beach || !beach.urlName) {
         console.error("Invalid beach selected:", beach);
         return;
       }
 
-      const beachNameForUrl = beach.name.toLowerCase().replace(/\s+/g, "-");
-      navigate(`/beach/${beachNameForUrl}`, {
-        state: {
-          coordinates: beach.coordinates,
-          beachCode: beach.code,
-        },
-      });
+      // 2. Navigate using the consistent urlName.
+      //    We also remove the `state` object because it's unreliable on page refresh.
+      //    Your BeachDetailsPage should only rely on the URL parameter.
+      navigate(`/beach/${beach.urlName}`);
     },
     [navigate]
   );

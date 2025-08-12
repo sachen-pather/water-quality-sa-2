@@ -20,8 +20,7 @@ const SeaClearChatbot = () => {
   const [isRateLimited, setIsRateLimited] = useState(false);
 
   // Groq API configuration
-  const GROQ_API_KEY =
-    "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";
+  const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
   const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
   // Initialize chatbot with welcome message
@@ -54,6 +53,13 @@ const SeaClearChatbot = () => {
 
   // Call Groq API
   const callGroqAPI = async (userMessage) => {
+    // Check if API key is available
+    if (!GROQ_API_KEY) {
+      throw new Error(
+        "Groq API key not configured. Please set VITE_GROQ_API_KEY in your .env file."
+      );
+    }
+
     const systemPrompt = `You are SeaClear AI, a Cape Town beach safety expert specializing in:
 
 WATER QUALITY KNOWLEDGE:
@@ -208,23 +214,26 @@ Keep responses conversational, under 150 words, safety-focused, and use relevant
   const getStatusIndicator = () => {
     if (isRateLimited) {
       return (
-        <span className="text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full flex items-center">
-          <AlertCircle size={10} className="mr-1" />
-          Rate limited - please wait
+        <span className="text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full flex items-center justify-center">
+          <AlertCircle size={8} className="mr-1" />
+          <span className="hidden sm:inline">Rate limited - please wait</span>
+          <span className="sm:hidden">Please wait</span>
         </span>
       );
     } else if (errorCount >= 2) {
       return (
-        <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full flex items-center">
-          <AlertCircle size={10} className="mr-1" />
-          Connection issues
+        <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full flex items-center justify-center">
+          <AlertCircle size={8} className="mr-1" />
+          <span className="hidden sm:inline">Connection issues</span>
+          <span className="sm:hidden">Issues</span>
         </span>
       );
     } else {
       return (
-        <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full flex items-center">
-          <Zap size={10} className="mr-1" />
-          Groq AI • Fast & Reliable
+        <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full flex items-center justify-center">
+          <Zap size={8} className="mr-1" />
+          <span className="hidden sm:inline">Groq AI • Fast & Reliable</span>
+          <span className="sm:hidden">Groq AI</span>
         </span>
       );
     }
@@ -256,26 +265,29 @@ Keep responses conversational, under 150 words, safety-focused, and use relevant
   }
 
   return (
-    <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-xl shadow-2xl border border-gray-200 z-50 flex flex-col">
+    <div className="fixed bottom-4 right-4 w-[calc(100vw-2rem)] max-w-96 h-[85vh] max-h-[500px] sm:w-96 sm:h-[500px] bg-white rounded-xl shadow-2xl border border-gray-200 z-50 flex flex-col">
       {/* Header */}
-      <div className="bg-gradient-to-r from-cyan-600 to-blue-700 text-white p-4 rounded-t-xl flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-            <Bot size={16} />
+      <div className="bg-gradient-to-r from-cyan-600 to-blue-700 text-white p-3 sm:p-4 rounded-t-xl flex items-center justify-between">
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-full flex items-center justify-center">
+            <Bot size={12} className="sm:w-4 sm:h-4" />
           </div>
           <div>
-            <h3 className="font-semibold text-sm">SeaClear Assistant</h3>
+            <h3 className="font-semibold text-xs sm:text-sm">
+              SeaClear Assistant
+            </h3>
             <p className="text-xs text-blue-100 flex items-center">
-              <Zap size={10} className="mr-1" />
-              Powered by Groq AI
+              <Zap size={8} className="mr-1 sm:w-2.5 sm:h-2.5" />
+              <span className="hidden sm:inline">Powered by Groq AI</span>
+              <span className="sm:hidden">Groq AI</span>
             </p>
           </div>
         </div>
         <button
           onClick={() => setIsOpen(false)}
-          className="text-white hover:text-gray-200 transition-colors"
+          className="text-white hover:text-gray-200 transition-colors p-1"
         >
-          <X size={20} />
+          <X size={16} className="sm:w-5 sm:h-5" />
         </button>
       </div>
 
@@ -353,9 +365,9 @@ Keep responses conversational, under 150 words, safety-focused, and use relevant
 
       {/* Suggested Questions (show when no conversation or errors) */}
       {(messages.length <= 1 || errorCount >= 2) && !isLoading && (
-        <div className="px-4 pb-2">
+        <div className="px-3 pb-2 sm:px-4">
           <p className="text-xs text-gray-500 mb-2 flex items-center">
-            <HelpCircle size={12} className="mr-1" />
+            <HelpCircle size={10} className="mr-1" />
             Try asking:
           </p>
           <div className="grid grid-cols-1 gap-1">
@@ -364,7 +376,7 @@ Keep responses conversational, under 150 words, safety-focused, and use relevant
                 key={idx}
                 onClick={() => handleSuggestedQuestion(question)}
                 disabled={isRateLimited || isLoading}
-                className="text-left text-xs p-2 bg-cyan-50 hover:bg-cyan-100 rounded text-cyan-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-left text-xs p-2 bg-cyan-50 hover:bg-cyan-100 rounded text-cyan-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed active:bg-cyan-200"
               >
                 "{question}"
               </button>

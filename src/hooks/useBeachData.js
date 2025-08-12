@@ -4,6 +4,16 @@ import axios from "axios";
 // Updated mapping of BeachCode to user-friendly names, location and coordinates
 const beachCodeToInfo = {
   // Cape Town North
+  HB01: {
+    name: "Hermanus Main Beach",
+    location: "Western Cape",
+    coordinates: [-34.4187, 19.2345],
+  },
+  CS01: {
+    name: "Clifton First Beach",
+    location: "Cape Town Atlantic",
+    coordinates: [-33.9396, 18.3715],
+  },
   XCN08: {
     name: "Silverstroomstrand Tidal Pool",
     location: "Cape Town North",

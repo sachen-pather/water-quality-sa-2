@@ -140,11 +140,11 @@ const getStatusColorClass = (status) => {
 const getSafetyDescription = (status) => {
   switch (status) {
     case "Safe":
-      return "This beach is safe for swimming with low E. coli levels (below 250 cfu/100ml).";
+      return "This beach is safe for swimming with low Enterococcus levels (below 250 cfu/100ml).";
     case "Caution":
-      return "Swimming at this beach requires caution. E. coli levels are moderate (250-500 cfu/100ml).";
+      return "Swimming at this beach requires caution. Enterococcus levels are moderate (250-500 cfu/100ml).";
     case "Unsafe":
-      return "Swimming is not recommended. E. coli levels are high (above 500 cfu/100ml).";
+      return "Swimming is not recommended. Enterococcus levels are high (above 500 cfu/100ml).";
     default:
       return "Water quality information is not available for this beach.";
   }
@@ -213,7 +213,7 @@ const BeachCard = ({
           </div>
 
           <div>
-            <span className="font-semibold text-sm">E. coli: </span>
+            <span className="font-semibold text-sm">Enterococcus: </span>
             <span className="text-sm text-gray-700">
               {enterococcusCount ||
                 (beach.values && beach.values.length > 0

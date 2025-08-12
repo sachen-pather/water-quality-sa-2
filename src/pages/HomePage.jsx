@@ -58,37 +58,44 @@ const defaultIcon = new L.Icon({
 
 // Function to determine icon based on enterococcus count
 const getMarkerIcon = (beach) => {
-  if (!beach.values || beach.values.length === 0) {
-    return defaultIcon;
-  }
+  const safetyStatus = getSafetyStatus(beach);
 
-  const ecoliCount = beach.values[0];
-
-  if (ecoliCount < 250) {
-    return safeIcon;
-  } else if (ecoliCount >= 250 && ecoliCount <= 500) {
-    return cautionIcon;
-  } else if (ecoliCount > 500) {
-    return unsafeIcon;
-  } else {
-    return defaultIcon;
+  switch (safetyStatus) {
+    case "Safe":
+      return safeIcon; // Green
+    case "Caution":
+      return cautionIcon; // Yellow
+    case "Unsafe":
+      return unsafeIcon; // Red
+    default:
+      return defaultIcon; // Blue
   }
 };
 
 // Function to get safety status text
 const getSafetyStatus = (beach) => {
-  if (!beach.values || beach.values.length === 0) {
+  if (!beach.values || beach.values.length === 0 || beach.values[0] == null) {
     return "Unknown";
   }
 
-  const ecoliCount = beach.values[0];
+  // Convert to number and handle potential string values
+  const ecoliCount = parseFloat(beach.values[0]);
+
+  // Check if conversion resulted in a valid number
+  if (isNaN(ecoliCount)) {
+    console.warn(
+      `Invalid enterococcus count for beach ${beach.name}:`,
+      beach.values[0]
+    );
+    return "Unknown";
+  }
 
   if (ecoliCount < 250) {
-    return "Safe";
+    return "Safe"; // Green
   } else if (ecoliCount >= 250 && ecoliCount <= 500) {
-    return "Caution";
+    return "Caution"; // Yellow
   } else if (ecoliCount > 500) {
-    return "Unsafe";
+    return "Unsafe"; // Red
   } else {
     return "Unknown";
   }

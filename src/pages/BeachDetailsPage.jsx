@@ -47,22 +47,30 @@ function MapUpdater({ center }) {
 }
 
 // Function to get water quality category based on enterococcus count
-function getWaterQualityCategory(enterococcusCount) {
+const getWaterQualityCategory = (enterococcusCount) => {
   if (enterococcusCount === null || enterococcusCount === undefined) {
     return "Unknown";
   }
 
-  // Based on the standards
-  if (enterococcusCount < 100) {
-    return "Excellent";
-  } else if (enterococcusCount < 200) {
-    return "Good";
-  } else if (enterococcusCount < 185) {
-    return "Sufficient";
-  } else {
-    return "Poor";
+  // Convert to number if it's a string
+  const count = parseFloat(enterococcusCount);
+
+  if (isNaN(count)) {
+    console.warn("Invalid enterococcus count:", enterococcusCount);
+    return "Unknown";
   }
-}
+
+  // Use the same 250/500 thresholds but with more descriptive names
+  if (count < 250) {
+    return "Excellent"; // Same as "Safe"
+  } else if (count >= 250 && count <= 500) {
+    return "Fair"; // Same as "Caution"
+  } else if (count > 500) {
+    return "Poor"; // Same as "Unsafe"
+  } else {
+    return "Unknown";
+  }
+};
 
 // Sample beach description fallbacks when description is missing
 const beachDescriptions = {
@@ -134,6 +142,23 @@ const BeachDetailsPage = () => {
       });
     }
   }, [beach, getBeachDescription]);
+
+  const getSafetyStatusFromCount = (enterococcusCount) => {
+    if (enterococcusCount === null || enterococcusCount === undefined) {
+      return "Unknown";
+    }
+
+    const count = parseFloat(enterococcusCount);
+
+    if (isNaN(count)) {
+      return "Unknown";
+    }
+
+    if (count < 250) return "Safe";
+    else if (count >= 250 && count <= 500) return "Caution";
+    else if (count > 500) return "Unsafe";
+    else return "Unknown";
+  };
 
   // Fetch weather data
   const fetchWeatherData = useCallback(async () => {
@@ -308,12 +333,9 @@ const BeachDetailsPage = () => {
   }
 
   // Calculate safety status
-  const safetyStatus =
-    beach.is_safe === 1 || beach.is_safe === true
-      ? "Safe"
-      : beach.is_safe === 0 || beach.is_safe === false
-      ? "Unsafe"
-      : "Unknown";
+  const safetyStatus = getSafetyStatusFromCount(
+    beach.values && beach.values.length > 0 ? beach.values[0] : null
+  );
 
   // Determine water quality category based on enterococcus count
   const waterQualityCategory = getWaterQualityCategory(

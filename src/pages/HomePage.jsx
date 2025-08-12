@@ -10,7 +10,7 @@ import BeachCard from "@/components/BeachCard";
 import Header from "@/components/Header";
 import useBeachData from "@/hooks/useBeachData";
 import { formatDate, formatEnterococcusCount } from "@/utils/formatters";
-
+import SeaClearChatbot from "@/components/SeaClearChatbot";
 // Create safety-based marker icons
 const safeIcon = new L.Icon({
   iconUrl:
@@ -293,7 +293,7 @@ const HomePage = () => {
                             Last Sampled: {formatDate(beach.date_sampled)}
                           </div>
                           <div className="text-sm">
-                            E. coli:{" "}
+                            Enterococcus:{" "}
                             {formatEnterococcusCount(
                               beach.values && beach.values.length > 0
                                 ? beach.values[0]
@@ -353,6 +353,7 @@ const HomePage = () => {
           </div>
         </div>
       </footer>
+      <SeaClearChatbot />
     </div>
   );
 };

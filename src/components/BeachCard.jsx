@@ -5,8 +5,9 @@ import {
   getWaterQualityDescription,
 } from "@/utils/formatters";
 
-// Beach images array (keeping your original images)
+// Expanded beach images array with more variety
 const beachImages = [
+  // Original tropical/general beach images
   "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?w=400&h=300&fit=crop",
@@ -17,6 +18,46 @@ const beachImages = [
   "https://images.unsplash.com/photo-1536759808958-bccfbc1ec1d2?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=400&h=300&fit=crop",
+
+  // Additional beach variety
+  "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop", // Rocky coast
+  "https://images.unsplash.com/photo-1515859005217-8a1f08870f59?w=400&h=300&fit=crop", // Sunset beach
+  "https://images.unsplash.com/photo-1544213830-fb55c41b88e9?w=400&h=300&fit=crop", // Beach with cliffs
+  "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop", // Ocean waves
+  "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=400&h=300&fit=crop", // Sandy beach
+  "https://images.unsplash.com/photo-1520637836862-4d197d17c0a4?w=400&h=300&fit=crop", // Coastal view
+  "https://images.unsplash.com/photo-1484821582734-6c6c9f99a672?w=400&h=300&fit=crop", // Beach pier
+  "https://images.unsplash.com/photo-1571847140471-1d7766e825ea?w=400&h=300&fit=crop", // Beach huts
+  "https://images.unsplash.com/photo-1476673160081-cf065607f449?w=400&h=300&fit=crop", // Mountain beach
+  "https://images.unsplash.com/photo-1544213830-fb55c41b88e9?w=400&h=300&fit=crop", // Dramatic coastline
+
+  // Cape Town specific style beaches
+  "https://images.unsplash.com/photo-1517639493569-5666a7b2f494?w=400&h=300&fit=crop", // African coast
+  "https://images.unsplash.com/photo-1509233725247-49e657c54213?w=400&h=300&fit=crop", // Table Mountain style
+  "https://images.unsplash.com/photo-1464822759844-d150baec0494?w=400&h=300&fit=crop", // Rocky African coast
+  "https://images.unsplash.com/photo-1516815231560-8f41ec531527?w=400&h=300&fit=crop", // Penguin beach style
+  "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=400&h=300&fit=crop", // South African beach
+
+  // More varied beach scenes
+  "https://images.unsplash.com/photo-1512273222628-4daea6e55abb?w=400&h=300&fit=crop", // Beach with boardwalk
+  "https://images.unsplash.com/photo-1441716844725-09cedc13a4e7?w=400&h=300&fit=crop", // Sunrise beach
+  "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=300&fit=crop", // Beach with rocks
+  "https://images.unsplash.com/photo-1520637836862-4d197d17c0a4?w=400&h=300&fit=crop", // Aerial beach view
+  "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=400&h=300&fit=crop", // Beach cove
+
+  // Ocean and water focused
+  "https://images.unsplash.com/photo-1504681869696-d977211a5f4c?w=400&h=300&fit=crop", // Crystal clear water
+  "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=300&fit=crop", // Deep blue ocean
+  "https://images.unsplash.com/photo-1541963463532-d68292c34d19?w=400&h=300&fit=crop", // Beach waves
+  "https://images.unsplash.com/photo-1442604528-74aeb4d4b0e5?w=400&h=300&fit=crop", // Turquoise water
+  "https://images.unsplash.com/photo-1516815231560-8f41ec531527?w=400&h=300&fit=crop", // Penguin colony beach
+];
+
+// Fallback images in case primary ones fail
+const fallbackImages = [
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?w=400&h=300&fit=crop",
 ];
 
 // Get a random beach image or use the provided one
@@ -37,6 +78,19 @@ const getBeachImage = (image, code) => {
   return beachImages[Math.floor(Math.random() * beachImages.length)];
 };
 
+// Get fallback image when primary image fails
+const getFallbackImage = (code) => {
+  if (code) {
+    const hashCode = code.split("").reduce((a, b) => {
+      a = (a << 5) - a + b.charCodeAt(0);
+      return a & a;
+    }, 0);
+    const index = Math.abs(hashCode) % fallbackImages.length;
+    return fallbackImages[index];
+  }
+  return fallbackImages[0];
+};
+
 // Function to determine safety status based on enterococcus count
 const getSafetyStatus = (beach, providedWaterQuality) => {
   // If water quality is explicitly provided as a string, use it
@@ -46,14 +100,16 @@ const getSafetyStatus = (beach, providedWaterQuality) => {
 
   // If beach has values, determine status based on enterococcus count
   if (beach.values && beach.values.length > 0) {
-    const ecoliCount = beach.values[0];
+    const ecoliCount = parseFloat(beach.values[0]);
 
-    if (ecoliCount < 250) {
-      return "Safe";
-    } else if (ecoliCount >= 250 && ecoliCount <= 500) {
-      return "Caution";
-    } else if (ecoliCount > 500) {
-      return "Unsafe";
+    if (!isNaN(ecoliCount)) {
+      if (ecoliCount < 250) {
+        return "Safe";
+      } else if (ecoliCount >= 250 && ecoliCount <= 500) {
+        return "Caution";
+      } else if (ecoliCount > 500) {
+        return "Unsafe";
+      }
     }
   }
 
@@ -126,11 +182,12 @@ const BeachCard = ({
         <img
           src={getBeachImage(image, beach.code)}
           alt={beach.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = beachImages[0];
+            e.target.src = getFallbackImage(beach.code);
           }}
+          loading="lazy"
         />
       </div>
       <div className="p-4">

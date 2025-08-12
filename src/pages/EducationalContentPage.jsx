@@ -87,7 +87,7 @@ const EducationalContentPage = () => {
                   parameters, including:
                 </p>
                 <ul className="list-disc pl-6 space-y-2 text-gray-700">
-                  <li>Bacterial levels (e.g., E. coli and Enterococci)</li>
+                  <li>Bacterial levels (e.g., Enterococcus and E. coli)</li>
                   <li>pH levels</li>
                   <li>Dissolved oxygen</li>
                   <li>Turbidity (water clarity)</li>
@@ -100,23 +100,24 @@ const EducationalContentPage = () => {
           <section className="bg-white rounded-xl shadow-sm p-6">
             <SectionHeader
               icon={<AlertTriangle className="text-yellow-500 w-6 h-6" />}
-              title="Understanding E. coli in Beach Water"
+              title="Understanding Enterococcus in Beach Water"
             />
 
             <div className="space-y-6">
               <p className="text-gray-700">
-                E. coli (Escherichia coli) is a type of bacteria commonly found
-                in the intestines of humans and animals. While most strains are
-                harmless, their presence in water indicates fecal contamination.
+                Enterococcus is a type of bacteria commonly found in the
+                intestines of humans and animals. While some strains are
+                harmless, their presence in water indicates fecal contamination
+                and potential health risks.
               </p>
 
               <div>
                 <h3 className="text-xl font-semibold mb-3 text-blue-700">
-                  Why E. coli Matters
+                  Why Enterococcus Matters
                 </h3>
                 <p className="mb-3 text-gray-700">
-                  E. coli is used as an indicator organism for water quality
-                  testing because:
+                  Enterococcus is used as an indicator organism for marine water
+                  quality testing because:
                 </p>
                 <ul className="list-disc pl-6 mb-4 space-y-2 text-gray-700">
                   <li>
@@ -126,6 +127,10 @@ const EducationalContentPage = () => {
                   <li>
                     High levels suggest recent sewage or animal waste
                     contamination
+                  </li>
+                  <li>
+                    It survives longer in saltwater than other indicator
+                    bacteria
                   </li>
                   <li>It can be easily tested for and quantified</li>
                 </ul>
@@ -144,7 +149,7 @@ const EducationalContentPage = () => {
                     <div className="w-4 h-4 rounded-full bg-green-500"></div>
                     <span className="font-semibold text-green-600">Safe:</span>
                     <span className="text-gray-700">
-                      E. coli levels below 250 cfu/100ml
+                      Enterococcus levels below 250 cfu/100ml
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -153,14 +158,119 @@ const EducationalContentPage = () => {
                       Caution:
                     </span>
                     <span className="text-gray-700">
-                      E. coli levels between 250-500 cfu/100ml
+                      Enterococcus levels between 250-500 cfu/100ml
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-red-500"></div>
                     <span className="font-semibold text-red-600">Unsafe:</span>
                     <span className="text-gray-700">
-                      E. coli levels above 500 cfu/100ml
+                      Enterococcus levels above 500 cfu/100ml
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-blue-700">
+                  Health Risks
+                </h3>
+                <p className="mb-3 text-gray-700">
+                  Swimming in water with high Enterococcus levels can lead to:
+                </p>
+                <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                  <li>Gastrointestinal illness (stomach upset, diarrhea)</li>
+                  <li>Skin and eye infections</li>
+                  <li>Respiratory problems</li>
+                  <li>Ear infections</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section className="bg-white rounded-xl shadow-sm p-6">
+            <SectionHeader
+              icon={<Shield className="text-cyan-600 w-6 h-6" />}
+              title="Beach Safety Guidelines"
+            />
+
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-blue-700">
+                  Rip Current Safety
+                </h3>
+                <p className="mb-3 text-gray-700">
+                  Rip currents are powerful, channeled currents of water flowing
+                  away from shore. Here's how to stay safe:
+                </p>
+                <ul className="list-disc pl-6 mb-4 space-y-2 text-gray-700">
+                  <li>Look for channels of churning, choppy water</li>
+                  <li>Watch for lines of foam or debris moving seaward</li>
+                  <li>If caught in a rip current, don't fight it directly</li>
+                  <li>
+                    Swim parallel to the shore until you escape the current
+                  </li>
+                  <li>Then swim at an angle back to shore</li>
+                  <li>Always swim near lifeguards when possible</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-blue-700">
+                  Sun Protection
+                </h3>
+                <p className="mb-3 text-gray-700">
+                  South African sun is intense, especially with reflection off
+                  water:
+                </p>
+                <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                  <li>Use broad-spectrum SPF 30+ sunscreen</li>
+                  <li>Reapply every 2 hours and after swimming</li>
+                  <li>Seek shade during peak hours (10am-4pm)</li>
+                  <li>Wear protective clothing and hats</li>
+                  <li>Choose reef-safe sunscreen to protect marine life</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-blue-700">
+                  Beach Flag System
+                </h3>
+                <div className="space-y-3 pl-6">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-green-500"></div>
+                    <span className="font-semibold text-green-600">
+                      Green Flag:
+                    </span>
+                    <span className="text-gray-700">
+                      Safe swimming conditions
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-yellow-500"></div>
+                    <span className="font-semibold text-yellow-600">
+                      Yellow Flag:
+                    </span>
+                    <span className="text-gray-700">
+                      Use caution, moderate risk
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-red-500"></div>
+                    <span className="font-semibold text-red-600">
+                      Red Flag:
+                    </span>
+                    <span className="text-gray-700">
+                      Dangerous conditions, no swimming
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-purple-500"></div>
+                    <span className="font-semibold text-purple-600">
+                      Purple Flag:
+                    </span>
+                    <span className="text-gray-700">
+                      Marine life hazard (sharks, jellyfish)
                     </span>
                   </div>
                 </div>
@@ -218,6 +328,86 @@ const EducationalContentPage = () => {
                     pollution
                   </p>
                 </div>
+
+                <div className="p-3 border-l-4 border-cyan-500 bg-blue-50 rounded-r-md">
+                  <h4 className="font-semibold text-blue-700">
+                    Respect marine life
+                  </h4>
+                  <p className="text-gray-700 text-sm">
+                    Don't feed wildlife, maintain distance from marine animals,
+                    and avoid disturbing nesting areas
+                  </p>
+                </div>
+
+                <div className="p-3 border-l-4 border-cyan-500 bg-blue-50 rounded-r-md">
+                  <h4 className="font-semibold text-blue-700">
+                    Conserve water
+                  </h4>
+                  <p className="text-gray-700 text-sm">
+                    Reduce water pollution by using eco-friendly products and
+                    minimizing runoff
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="bg-white rounded-xl shadow-sm p-6">
+            <SectionHeader
+              icon={<Info className="text-cyan-600 w-6 h-6" />}
+              title="About SeaClear"
+            />
+
+            <div className="space-y-4">
+              <p className="text-gray-700">
+                SeaClear is a comprehensive beach water quality monitoring
+                system for Cape Town's coastline. Our mission is to provide
+                real-time, accurate information to help beachgoers make informed
+                decisions about water safety.
+              </p>
+
+              <div className="grid gap-3">
+                <div className="p-3 border-l-4 border-blue-500 bg-blue-50 rounded-r-md">
+                  <h4 className="font-semibold text-blue-700">
+                    Real-time Monitoring
+                  </h4>
+                  <p className="text-gray-700 text-sm">
+                    We track Enterococcus levels at beaches across Cape Town,
+                    updating data regularly
+                  </p>
+                </div>
+
+                <div className="p-3 border-l-4 border-blue-500 bg-blue-50 rounded-r-md">
+                  <h4 className="font-semibold text-blue-700">
+                    Scientific Standards
+                  </h4>
+                  <p className="text-gray-700 text-sm">
+                    Our measurements follow South African water quality
+                    guidelines and international best practices
+                  </p>
+                </div>
+
+                <div className="p-3 border-l-4 border-blue-500 bg-blue-50 rounded-r-md">
+                  <h4 className="font-semibold text-blue-700">
+                    Community Engagement
+                  </h4>
+                  <p className="text-gray-700 text-sm">
+                    Share your beach experiences and help build a community
+                    focused on coastal protection
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg border border-cyan-200">
+                <h4 className="font-semibold text-blue-700 mb-2">
+                  Developer's Note
+                </h4>
+                <p className="text-gray-700 text-sm">
+                  SeaClear was developed by Sachen Pather as part of a computer
+                  science project, evolved into a fully functional application
+                  addressing critical public health needs in South Africa's
+                  coastal communities.
+                </p>
               </div>
             </div>
           </section>

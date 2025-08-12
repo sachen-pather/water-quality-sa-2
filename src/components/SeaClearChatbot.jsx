@@ -70,9 +70,9 @@ const SeaClearChatbot = () => {
 Do not use any words in bold or all caps or styled. Specifically do not use asterisks in responses. Keep responses relatively short unless necessary.
 
 WATER QUALITY KNOWLEDGE:
-- Safe: E. coli < 250 cfu/100ml (Green markers)
-- Caution: E. coli 250-500 cfu/100ml (Yellow markers)  
-- Unsafe: E. coli > 500 cfu/100ml (Red markers)
+- Safe: Enterococcus < 250 cfu/100ml (Green markers)
+- Caution: Enterococcus 250-500 cfu/100ml (Yellow markers)  
+- Unsafe: Enterococcus > 500 cfu/100ml (Red markers)
 
 CAPE TOWN BEACHES:
 - Camps Bay: Popular, mountain views, Atlantic side
@@ -204,7 +204,7 @@ Keep responses conversational, under 150 words, safety-focused, and use relevant
 
   const suggestedQuestions = [
     "Is it safe to swim today?",
-    "What do E. coli levels mean?",
+    "What do Enterococcus levels mean?",
     "Best beach for families?",
     "How to spot rip currents?",
     "What causes poor water quality?",

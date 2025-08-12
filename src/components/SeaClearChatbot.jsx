@@ -67,6 +67,7 @@ const SeaClearChatbot = () => {
     }
 
     const systemPrompt = `You are SeaClear AI, a Cape Town beach safety expert specializing in:
+Do not use any words in bold or all caps or styled
 
 WATER QUALITY KNOWLEDGE:
 - Safe: E. coli < 250 cfu/100ml (Green markers)

@@ -23,6 +23,13 @@ const SeaClearChatbot = () => {
   const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
   const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
+  // Debug: Log API key status (remove this after testing)
+  console.log("Environment variables:", {
+    hasGroqKey: !!GROQ_API_KEY,
+    keyLength: GROQ_API_KEY?.length || 0,
+    allEnvVars: import.meta.env,
+  });
+
   // Initialize chatbot with welcome message
   useEffect(() => {
     if (isOpen && messages.length === 0) {
@@ -53,11 +60,10 @@ const SeaClearChatbot = () => {
 
   // Call Groq API
   const callGroqAPI = async (userMessage) => {
-    // Check if API key is available
+    // Check if API key is available with fallback
     if (!GROQ_API_KEY) {
-      throw new Error(
-        "Groq API key not configured. Please set VITE_GROQ_API_KEY in your .env file."
-      );
+      console.error("Groq API key missing. Environment vars:", import.meta.env);
+      throw new Error("Groq API key not configured. Please contact support.");
     }
 
     const systemPrompt = `You are SeaClear AI, a Cape Town beach safety expert specializing in:

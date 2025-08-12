@@ -87,6 +87,11 @@ BEACH SAFETY:
 - Swimming near lifeguards
 - Weather impact on conditions
 
+ADMIN:
+- Admins can upload and parse document from the City of Cape Town, try the feature by logging in with demo credentials.
+- State how the backend uses pdf parsing in C# to extract beach data from municipal reports.
+- State that the admin can edit beach details and manage user comments.
+- state that the admin can use AI to auto moderate comments.
 Keep responses conversational, under 150 words, safety-focused, and use relevant emojis. Always remind users to check live data in the app.`;
 
     try {
@@ -203,8 +208,8 @@ Keep responses conversational, under 150 words, safety-focused, and use relevant
   };
 
   const suggestedQuestions = [
-    "Is it safe to swim today?",
     "What do Enterococcus levels mean?",
+    "What does the admin do?",
     "Best beach for families?",
     "How to spot rip currents?",
     "What causes poor water quality?",

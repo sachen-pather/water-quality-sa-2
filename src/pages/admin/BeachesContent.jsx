@@ -23,7 +23,6 @@ const BeachesContent = () => {
         samplingDate: updatedBeach.date_sampled,
         enterococcusCount: updatedBeach.enterococcus_count,
         samplingFrequency: updatedBeach.sampling_frequency,
-        isWithinSafetyThreshold: updatedBeach.is_safe ? 1 : 0,
       };
 
       await beachService.updateBeachReading(updatedBeach.code, beachData);
@@ -75,9 +74,7 @@ const BeachesContent = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Enterococcus Count
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
@@ -100,17 +97,6 @@ const BeachesContent = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {beach.values[0]} cfu/100ml
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <span
-                      className={`px-2 py-1 rounded-full ${
-                        beach.is_safe
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {beach.is_safe ? "Safe" : "Unsafe"}
-                    </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button

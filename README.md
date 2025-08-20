@@ -4,7 +4,7 @@ feel free to interact with this program by clicking on the URL
 
 A React-based web application for monitoring beach water quality in Cape Town, South Africa. This application provides real-time water quality information, community discussions, and administrative tools for managing beach safety data.
 
-🌊 **Live Demo**: [SeaClear Water Quality Monitor](https://papaya-yeot-5ff93c.netlify.app)
+ **Live Demo**: [SeaClear Water Quality Monitor](https://papaya-yeot-5ff93c.netlify.app)
 
 ## 📋 Table of Contents
 
@@ -18,9 +18,9 @@ A React-based web application for monitoring beach water quality in Cape Town, S
 - [Deployment](#deployment)
 - [Contributing](#contributing)
 
-## ✨ Features
+##  Features
 
-### 🏖️ Public Features
+###  Public Features
 - **Interactive Beach Map**: View all Cape Town beaches with real-time water quality status
 - **Beach Details**: Detailed information including enterococcus levels, safety status, and weather
 - **Water Quality Indicators**: Color-coded safety levels (Safe/Caution/Unsafe)
@@ -29,14 +29,14 @@ A React-based web application for monitoring beach water quality in Cape Town, S
 - **AI Chatbot**: Groq-powered assistant for beach safety questions
 - **Responsive Design**: Mobile-first design that works on all devices
 
-### 🔧 Admin Features
+###  Admin Features
 - **Post Moderation**: Review and approve/reject community posts
 - **Beach Data Management**: Edit beach information and water quality readings
 - **PDF Upload**: Parse water quality reports from City of Cape Town
 - **Dashboard Analytics**: Overview of system status and recent activity
 - **Automated Moderation**: AI-powered content filtering
 
-## 🛠 Technology Stack
+##  Technology Stack
 
 - **React 18** - Frontend framework
 - **Vite** - Build tool and development server
@@ -48,7 +48,7 @@ A React-based web application for monitoring beach water quality in Cape Town, S
 - **Groq AI** - Chatbot intelligence
 - **Netlify** - Hosting and deployment
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Node.js 18+ 
@@ -112,7 +112,7 @@ VITE_ENVIRONMENT=development
 - **Groq API**: For AI chatbot - [Get API Key](https://console.groq.com)
 - **Gemini API**: For beach descriptions - [Get API Key](https://makersuite.google.com)
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 src/
@@ -146,7 +146,7 @@ src/
 └── App.jsx             # Main application component
 ```
 
-## 🧩 Key Components
+##  Key Components
 
 ### BeachCard Component
 Displays beach information with safety status, water quality, and recent measurements.
@@ -177,7 +177,7 @@ Comprehensive beach information including:
 - Community posts section
 - AI-generated descriptions
 
-## 🔌 API Integration
+## API Integration
 
 ### Backend Integration
 The app connects to a .NET Core API hosted on Azure:
@@ -202,7 +202,7 @@ const posts = await communityApi.getPostsByBeach(beachCode);
 - **Caution**: 250-500 cfu/100ml (Yellow)  
 - **Unsafe**: > 500 cfu/100ml (Red)
 
-## 🚀 Deployment
+## Deployment
 
 ### Netlify Deployment (Current)
 
@@ -237,7 +237,7 @@ npm run build
 # Deploy via Azure CLI or GitHub Actions
 ```
 
-## 🛡️ Security Features
+##  Security Features
 
 - **Input Validation**: All user inputs are sanitized
 - **Rate Limiting**: API calls are throttled to prevent abuse
@@ -245,7 +245,7 @@ npm run build
 - **CORS Protection**: Configured for allowed origins only
 - **Environment Variables**: Sensitive data stored securely
 
-## 🧪 Testing
+## Testing
 
 ### Run Tests
 ```bash
@@ -259,7 +259,7 @@ npm run test:coverage # Generate coverage report
 - API integration tests with MSW (Mock Service Worker)
 - E2E testing with Playwright (planned)
 
-## 📱 Mobile Responsiveness
+## Mobile Responsiveness
 
 The application is built mobile-first with:
 - Responsive grid layouts
@@ -268,14 +268,14 @@ The application is built mobile-first with:
 - Collapsible navigation menu
 - Progressive Web App capabilities (planned)
 
-## 🔄 State Management
+## State Management
 
 - **React Hooks**: useState, useEffect for local state
 - **Custom Hooks**: Reusable logic for auth and data fetching
 - **Context API**: Planned for global state (user preferences)
 - **Local Storage**: Persist admin authentication
 
-## 🎨 Styling Guidelines
+## Styling Guidelines
 
 ### Tailwind CSS Classes
 - Primary colors: `cyan-600`, `blue-700`
@@ -292,7 +292,7 @@ The application is built mobile-first with:
 </div>
 ```
 
-## 🐛 Error Handling
+## Error Handling
 
 ### Frontend Error Handling
 - Try-catch blocks for async operations
@@ -313,7 +313,7 @@ try {
 }
 ```
 
-## 📈 Performance Optimization
+## Performance Optimization
 
 - **Code Splitting**: Lazy loading of admin components
 - **Image Optimization**: WebP format with fallbacks
@@ -321,7 +321,7 @@ try {
 - **Caching**: Service worker for offline functionality (planned)
 - **CDN**: Optimized asset delivery via Netlify
 
-## 🤝 Contributing
+## Contributing
 
 1. **Fork the repository**
 2. **Create feature branch**
@@ -343,17 +343,17 @@ try {
 - `refactor:` Code refactoring
 - `test:` Test additions/updates
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙋‍♂️ Support
+## Support
 
 - **Issues**: Report bugs on [GitHub Issues](https://github.com/yourusername/seaclear-frontend/issues)
 - **Documentation**: Check the [Wiki](https://github.com/yourusername/seaclear-frontend/wiki)
 - **Email**: support@seaclear.co.za
 
-## 🔮 Roadmap
+## Roadmap
 
 ### Short Term
 - [ ] Offline functionality with service workers
@@ -368,5 +368,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Integration with more data sources
 
 ---
-
-**Built with ❤️ for Cape Town beach safety**

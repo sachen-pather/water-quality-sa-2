@@ -6,7 +6,7 @@ A React-based web application for monitoring beach water quality in Cape Town, S
 
  **Live Demo**: [SeaClear Water Quality Monitor](https://papaya-yeot-5ff93c.netlify.app)
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Features](#features)
 - [Technology Stack](#technology-stack)
